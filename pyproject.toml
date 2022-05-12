@@ -5,10 +5,10 @@ exclude = ["docs/*"]
 license = "Apache-2.0"
 name = "csvcubed-pmd"
 packages = [
-  {include = "csvcubedpmd"},
+  {include = "csvcubedpmd", from = "src"},
 ]
-readme = "csvcubedpmd/README.md"
-version = "0.1.0"
+readme = "README.md"
+version = "0.1.0-dev"
 
 [tool.poetry.dependencies]
 csvw = "*"
@@ -21,14 +21,10 @@ unidecode = "*"
 uritemplate = "*"
 click = "^8.0.3"
 chardet = "^4.0.0"
+csvcubed-models = "0.1.1"
 
 [tool.poetry.dev-dependencies]
-# The -models library is currently listed as a dev dependency so that we can reference it by its relative
-# path and continue to edit code side-by-side within the repo.
-# The dependency is to become a regular dependency when the packages are split out into separate repositories in
-# Issue #205
-csvcubed-models = {path = "./../csvcubed-models", develop = true}
-csvcubed-devtools = {path = "./../csvcubed-devtools", develop = true}
+csvcubed-devtools = "0.1.1"
 pytest-recording = "^0.12.0"
 
 [build-system]
@@ -41,7 +37,7 @@ exclude = [
   "**/tests",
   "**/.tox",
 ]
-pythonVersion = "3.9"
+pythonVersion = "3.10"
 
 [tool.poetry.scripts]
 pmdutils = 'csvcubedpmd.main:entry_point'
