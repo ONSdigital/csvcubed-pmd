@@ -8,12 +8,13 @@ from typing import Annotated
 from abc import ABC
 from datetime import datetime
 from csvcubedmodels.rdf.triple import Triple, InverseTriple, PropertyStatus
+from csvcubedmodels.rdf.datatypes import MARKDOWN
 from csvcubedmodels.rdf.resource import (
     NewMetadataResource,
     Resource,
-    map_str_to_markdown,
     map_resource_to_uri,
     map_str_to_en_literal,
+    map_to_literal_with_datatype
 )
 from csvcubedmodels.rdf import dcat
 from csvcubedmodels.rdf import skos
@@ -72,7 +73,7 @@ class Dataset(dcat.Dataset):
     markdown_description: Annotated[
         str,
         Triple(
-            PMDCAT.markdownDescription, PropertyStatus.recommended, map_str_to_markdown
+            PMDCAT.markdownDescription, PropertyStatus.recommended, map_to_literal_with_datatype(MARKDOWN)
         ),
     ]
     sparql_endpoint: Annotated[
