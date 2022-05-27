@@ -36,7 +36,7 @@ Feature: Testing the csvw command group in the CLI
           pmdcat:graph <http://data-graph-uri>;
           pmdcat:metadataGraph <http://catalog-metadata-graph-uri>;
           dct:creator <https://www.gov.uk/government/organisations/hm-revenue-customs>;
-          dct:description "All bulletins provide details on percentage of one litre or less bottles. This information is provided on a yearly basis."@en;
+          pmdcat:markdownDescription "All bulletins provide details on percentage of one litre or less bottles. This information is provided on a yearly basis."^^<https://www.w3.org/ns/iana/media-types/text/markdown#Resource>;
           dct:identifier "single-measure-bottles-bulletin";
           dct:issued "2019-02-28T00:00:00"^^xsd:dateTime;
           dct:modified "2019-02-28T00:00:00"^^xsd:dateTime;
@@ -50,7 +50,6 @@ Feature: Testing the csvw command group in the CLI
       <http://base-uri/single-measure-bulletin.csv#dataset-catalog-record> a dcat:CatalogRecord;
           rdfs:label "single-measure-bottles-bulletin"@en;
           pmdcat:metadataGraph <http://catalog-metadata-graph-uri>;
-          dct:description "All bulletins provide details on percentage of one litre or less bottles. This information is provided on a yearly basis."@en;
           dct:title "single-measure-bottles-bulletin"@en;
           foaf:primaryTopic <http://base-uri/single-measure-bulletin.csv#dataset-catalog-entry> .
 
@@ -136,4 +135,18 @@ Feature: Testing the csvw command group in the CLI
 
       <http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry/dataset-catalog-entry> a dcat:Dataset;
         pmdcat:datasetContents <http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry>.
+    """
+
+Scenario: The `pmdify` can cope with description that are type markdown instead of string.
+    Given the existing test-case files "dcatcli/*"
+    When the pmdutils command CLI is run with "dcat pmdify markdown_testing.csv-metadata.json http://base-uri http://data-graph-uri http://catalog-metadata-graph-uri"
+    Then the CLI should succeed
+    And the file at "markdown_testing.csv-metadata.json.nq" should exist
+    Given the N-Quads contained in "markdown_testing.csv-metadata.json.nq"
+    Then the RDF should contain
+    """
+      @prefix pmdcat: <http://publishmydata.com/pmdcat#> .
+
+      <http://base-uri/markdown_testing.csv#dataset-catalog-entry> a pmdcat:Dataset;
+          pmdcat:markdownDescription "All bulletins provide details on percentage of one litre or less bottles. This information is provided on a yearly basis."^^<https://www.w3.org/ns/iana/media-types/text/markdown#Resource>.
     """
