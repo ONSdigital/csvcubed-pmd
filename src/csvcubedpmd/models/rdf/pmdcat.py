@@ -4,7 +4,7 @@ PMDCAT
 """
 import rdflib
 from rdflib import Namespace, URIRef, Literal
-from typing import Annotated
+from typing import Annotated, Optional
 from abc import ABC
 from datetime import datetime
 from csvcubedmodels.rdf.triple import Triple, InverseTriple, PropertyStatus
@@ -71,7 +71,7 @@ class Dataset(dcat.Dataset):
         Triple(PMDCAT.datasetContents, PropertyStatus.mandatory, map_resource_to_uri),
     ]
     markdown_description: Annotated[
-        str,
+        Optional[str],
         Triple(
             PMDCAT.markdownDescription, PropertyStatus.recommended, map_to_literal_with_datatype(MARKDOWN)
         ),
