@@ -33,7 +33,11 @@ jobs:
           tags: |
             gsscogs/pmdutils:dev
       - name: Run pyright
-        run: poetry run pyright . --lib
+        # uses: docker
+        # image: */deploydocker/Dockerfile
+        run: |
+        poetry shell 
+        pyright . --lib
       - name: Run unittests 
         run: poetry run pytest --junitxml=pytest_results_pmd.xml
       - name: Run behaviour tests
