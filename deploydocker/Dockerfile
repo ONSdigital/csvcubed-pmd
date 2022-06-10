@@ -16,3 +16,12 @@ RUN pip install poetry
 RUN poetry export --format requirements.txt --without-hashes -o /requirements.txt
 RUN pip install --requirement /requirements.txt
 RUN pip install --no-deps --use-feature=in-tree-build /workspace/.
+
+# Run pyright
+RUN poetry run pyright . --lib
+
+# Run unittests
+RUN poetry run pytest --junitxml=pytest_results_pmd.xml
+
+# Run behaviour testst
+RUN poetry run behave tests/features --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json
