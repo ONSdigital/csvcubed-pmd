@@ -4,10 +4,10 @@ version: '3.4'
 on:
   push:
     branches:
-      - issue1
+      - 'issue1'
   pull_request:
     branches:
-      - issue1
+      - 'issue1'
   create:
     branches:
       - "*"
@@ -19,10 +19,10 @@ jobs:
       build:
         context: ../
         dockerfile: ./deploydocker/Dockerfile
-  steps:
-  - name: Run pyright
-    run: poetry run pyright . --lib
-  - name: Run unittests
-    run: poetry run pytest --junitxml=pytest_results_pmd.xml
-  - name: Run behaviour tests
-    run: poetry run behave tests/features --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json
+  # steps:
+  # - name: Run pyright
+  #   run: poetry run pyright . --lib
+  # - name: Run unittests
+  #   run: poetry run pytest --junitxml=pytest_results_pmd.xml
+  # - name: Run behaviour tests
+  #   run: poetry run behave tests/features --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json
