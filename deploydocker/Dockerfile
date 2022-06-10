@@ -17,6 +17,23 @@ RUN poetry export --format requirements.txt --without-hashes -o /requirements.tx
 RUN pip install --requirement /requirements.txt
 RUN pip install --no-deps --use-feature=in-tree-build /workspace/.
 
+
+# Patch behave
+RUN patch -Nf -d "${VENV_PATH}/lib/python3.10/site-packages/behave/formatter" -p1 < /cucumber-format.patch
+
+RUN rm -rf /workspace/*
+
+WORKDIR /workspace
+
+
+# Trick poetry into thinking it's inside the virtual environment
+# This will make all poetry commands work naturally, even outside the virtual environment.
+ENV VIRTUAL_ENV="${VENV_PATH}"
+ENV PATH="${PATH}:${VENV_PATH}/bin/"
+
+# On container start, the source code is loaded so we call poetry install so the venv knows where the local project's package/code lives.
+ENTRYPOINT poetry install && bash
+
 # Run pyright
 RUN poetry run pyright . --lib
 
