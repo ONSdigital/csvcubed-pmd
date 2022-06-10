@@ -32,5 +32,11 @@ jobs:
           build-args: dev=true
           tags: |
             gsscogs/pmdutils:dev
+      - name: Run pyright
+        run: poetry run pyright . --lib
+      - name: Run unittests 
+        run: poetry run pytest --junitxml=pytest_results_pmd.xml
+      - name: Run behaviour tests
+        run: poetry run behave tests/features --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json
       - name: Develop Image digest
         run: echo ${{ steps.docker_build_dev.outputs.digest }}
