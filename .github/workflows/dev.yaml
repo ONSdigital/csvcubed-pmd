@@ -23,6 +23,7 @@ jobs:
 
       - name: Install poetry
         run: |
+          cd csvcubed-pmd
           pip install poetry
           poetry export --format requirements.txt --without-hashes -o /requirements.txt
           pip install --requirement /requirements.txt
