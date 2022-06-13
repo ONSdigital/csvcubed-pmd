@@ -8,7 +8,8 @@ on:
 jobs:
   container:
       runs-on: ubuntu-latest
-      container: gsscogs/pythonversiontesting
+      container:
+        image: gsscogs/pythonversiontesting
       matrix:
         python-version: ["3.8", "3.9", "3.10"]
 
