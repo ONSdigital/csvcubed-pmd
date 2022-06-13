@@ -41,6 +41,12 @@ jobs:
       - name: Run behaviour tests
         run: poetry run behave tests/features --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json
 
+      - name: Publish Behave Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        if: always()
+        with:
+          files: "tests/behaviour/test-results.json"
+
   dev:
     runs-on: ubuntu-latest
     steps:
