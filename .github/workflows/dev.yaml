@@ -6,15 +6,10 @@ on:
       - 'issue1'
 
 jobs:
-  dev:
-    runs-on: ubuntu-latest
-    container:
+  container:
+      runs-on: ubuntu-latest
       image: gsscogs/pythonversiontesting
-    steps:
-
-      - name: Checkout
-        uses: actions/checkout@v2
-
+      steps:
       - name: setting python version
         uses: python:3.9
       - name: Install poetry
@@ -22,14 +17,21 @@ jobs:
           pip install poetry
           poetry export --format requirements.txt --without-hashes -o /requirements.txt
           pip install --requirement /requirements.txt
-          pip install --no-deps --use-feature=in-tree-build /workspace/.
+          pip install --no-deps --use-feature=in-tree-build /workspace/. 
       - name: Run pyright
         run: poetry run pyright . --lib
       - name: Run unittests
         run: poetry run pytest --junitxml=pytest_results_pmd.xml
       - name: Run behaviour tests
         run: poetry run poetry run behave tests/features --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json
-        
+      
+  dev:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       
