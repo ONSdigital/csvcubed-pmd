@@ -29,6 +29,7 @@ jobs:
         #   pip install --no-deps --use-feature=in-tree-build /workspace/. 
         run: |
           poetry install
+          which python
           bash -c 'export python_dir=$(python -c "import site; print(site.getsitepackages()[0])") && patch -Nf -d "$python_dir/behave/formatter" -p1 < /cucumber-format.patch || true'
 
       - name: Run pyright
