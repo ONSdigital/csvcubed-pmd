@@ -6,9 +6,9 @@ on:
       - 'issue1'
 
 jobs:
-  container:
+  testing:
       runs-on: ubuntu-latest
-      image: gsscogs/pythonversiontesting
+        image: gsscogs/pythonversiontesting
       steps:
 
       - name: setting python version
@@ -28,7 +28,7 @@ jobs:
 
       - name: Run behaviour tests
         run: poetry run poetry run behave tests/features --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json
-            
+
   dev:
     runs-on: ubuntu-latest
     steps:
