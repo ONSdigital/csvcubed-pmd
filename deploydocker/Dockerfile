@@ -23,12 +23,12 @@ ENV VIRTUAL_ENV="${VENV_PATH}"
 ENV PATH="${PATH}:${VENV_PATH}/bin/"
 
 # Copies your code file from your action repository to the filesystem path `/` of the container
-COPY entrypoint.sh deploydocker/entrypoint.sh
+COPY deploydocker/entrypoint.sh /entrypoint.sh
 
 # Code file to execute when the docker container starts up (`entrypoint.sh`)
-ENTRYPOINT ["deploydocker/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
 
-RUN chmod +x deploydocker/entrypoint.sh
+RUN chmod +x entrypoint.sh
 # # Run pyright
 # RUN poetry run pyright . --lib
 
