@@ -17,7 +17,7 @@ RUN poetry export --format requirements.txt --without-hashes -o /requirements.tx
 RUN pip install --requirement /requirements.txt
 RUN pip install --no-deps --use-feature=in-tree-build /workspace/.
 
-COPY entrypoint.sh /entrypoint.sh
+COPY entrypoint.sh /deploydocker/entrypoint.sh
 
 # Code file to execute when the docker container starts up (`entrypoint.sh`)
 ENTRYPOINT ["/deploydocker/entrypoint.sh"]
