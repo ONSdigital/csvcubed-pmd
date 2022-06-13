@@ -8,19 +8,19 @@ on:
 jobs:
   dev:
     runs-on: ubuntu-latest
-    # container:
-    #   image: pythonversiontesting
+    container:
+      image: pythonversiontesting
     steps:
 
       - name: Checkout
         uses: actions/checkout@v2
 
       - name: Run pyright
-        run: $ {{ poetry shell && pyright . --lib }}
+        run: poetry shell && pyright . --lib
       - name: Run unittests
-        run: $ {{ poetry run pytest --junitxml=pytest_results_pmd.xml }}
+        run: poetry run pytest --junitxml=pytest_results_pmd.xml
       - name: Run behaviour tests
-        run: $ {{ poetry run behave tests/features --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json }}
+        run: poetry run behave tests/features --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json
         
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
