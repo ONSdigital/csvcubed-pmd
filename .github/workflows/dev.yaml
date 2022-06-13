@@ -24,12 +24,14 @@ jobs:
       - name: Install poetry
         # run: |
         #   pip install poetry
-        #   poetry export --format requirements.txt --without-hashes -o /requirements.txt
+        #   poetry export --format requirements.txt --without-hashes -o /requirements.tx
+        t
         #   pip install --requirement /requirements.txt
         #   pip install --no-deps --use-feature=in-tree-build /workspace/. 
         run: |
           poetry install
           which python
+          mkdir "*/csvcubed-pmd-venv/lib/python3.10/site-packages/behave/formatter"
           bash -c 'export python_dir=$(python -c "import site; print(site.getsitepackages()[0])") && patch -Nf -d "$python_dir/behave/formatter" -p1 < /cucumber-format.patch || true'
 
       - name: Run pyright
