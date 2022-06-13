@@ -8,9 +8,12 @@ on:
 jobs:
   testing:
       runs-on: ubuntu-latest
-      image: gsscogs/pythonversiontesting
-      matrix:
-        python-version: ["3.8", "3.9", "3.10"]
+      container:
+        image: gsscogs/pythonversiontesting
+      strategy:
+        fail-fast: false
+        matrix:
+          python-version: ["3.8", "3.9", "3.10"]
       steps:
 
     - name: Set up Python ${{ matrix.python-version }}
