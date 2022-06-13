@@ -30,8 +30,7 @@ jobs:
         run: |
           poetry install
           which python
-          mkdir "/__t/Python/3.10.4/x64/lib/python3.10/site-packages/behave/formatter"
-          bash -c 'export python_dir=$(python -c "import site; print(site.getsitepackages()[0])") && patch -Nf -d "$python_dir/behave/formatter" -p1 < /cucumber-format.patch || true'
+          export python_dir=$(poetry run python -c "import site; print(site.getsitepackages()[0])") && patch -Nf -d "$python_dir/behave/formatter" -p1 < /cucumber-format.patch
 
       - name: Run pyright
         run: poetry run pyright . --lib
