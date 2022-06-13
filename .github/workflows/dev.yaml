@@ -32,8 +32,8 @@ jobs:
           build-args: dev=true
           tags: |
             gsscogs/pmdutils:dev
-      - name: Run entrypoint.sh
-        run: $ chmod +x entrypoint.sh
+      # - name: Run entrypoint.sh
+      #   run: $ chmod +x entrypoint.sh
       # - name: Run pyright
       #   run: $ {{ poetry shell && pyright . --lib }}
       # - name: Run unittests
