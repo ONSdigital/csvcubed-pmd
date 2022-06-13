@@ -15,8 +15,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      # - name: Run pyright
-      #   run: poetry run pyright . --lib
+      - name: setting python version
+        uses: python:3.9
+      - name: Install poetry
+        run: |
+          pip install poetry
+          poetry export --format requirements.txt --without-hashes -o /requirements.txt
+          pip install --requirement /requirements.txt
+          pip install --no-deps --use-feature=in-tree-build /workspace/.
+      - name: Run pyright
+        run: poetry run pyright . --lib
       - name: Run unittests
         run: poetry run pytest --junitxml=pytest_results_pmd.xml
       - name: Run behaviour tests
