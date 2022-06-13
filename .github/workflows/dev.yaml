@@ -33,22 +33,16 @@ jobs:
           tags: |
             gsscogs/pmdutils:dev
       - name: Run pyright
-        uses: docker/build-push-action@v2
-        id: docker_build_dev
         with:
           context: .
           file: deploydocker/Dockerfile
         run: python3 poetry shell && pyright . --lib
-      - name: Run unittests 
-        uses: docker/build-push-action@v2
-        id: docker_build_dev
+      - name: Run unittests
         with:
           context: .
           file: deploydocker/Dockerfile
         run: python3 poetry run pytest --junitxml=pytest_results_pmd.xml
       - name: Run behaviour tests
-        uses: docker/build-push-action@v2
-        id: docker_build_dev
         with:
           context: .
           file: deploydocker/Dockerfile
