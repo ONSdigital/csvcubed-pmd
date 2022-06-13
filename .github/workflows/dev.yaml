@@ -6,7 +6,6 @@ on:
       - 'issue1'
 
 jobs:
-
   Testing:
       runs-on: ubuntu-latest
       container:
