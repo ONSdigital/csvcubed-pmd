@@ -28,7 +28,7 @@ COPY deploydocker/entrypoint.sh /deploydocker/entrypoint.sh
 # Code file to execute when the docker container starts up (`entrypoint.sh`)
 ENTRYPOINT ["/deploydocker/entrypoint.sh"]
 
-# RUN $ chmod +x entrypoint.sh
+RUN $ chmod +x deploydocker/entrypoint.sh
 # # Run pyright
 # RUN poetry run pyright . --lib
 
