@@ -15,8 +15,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      # - name: Run pyright
-      #   run: poetry shell && pyright . --lib
+      - name: Run pyright
+        run: poetry run pyright . --lib
       - name: Run unittests
         run: poetry shell && poetry run pytest --junitxml=pytest_results_pmd.xml
       - name: Run behaviour tests
