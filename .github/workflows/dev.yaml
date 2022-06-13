@@ -8,8 +8,8 @@ on:
 jobs:
   dev:
     runs-on: ubuntu-latest
-    container:
-      image: pythonversiontesting
+    # container:
+    #   image: pythonversiontesting
     steps:
 
       - name: Checkout
