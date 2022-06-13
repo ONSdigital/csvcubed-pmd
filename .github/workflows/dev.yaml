@@ -12,7 +12,7 @@ jobs:
       steps:
 
       - name: setting python version
-        uses: python:3.10.1-buster
+        run: python:3.9
 
       - name: Install poetry
         run: |
