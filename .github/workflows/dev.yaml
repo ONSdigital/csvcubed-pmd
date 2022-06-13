@@ -29,7 +29,7 @@ jobs:
         #   pip install --no-deps --use-feature=in-tree-build /workspace/. 
         run: |
           poetry install
-          
+
       - name: Run pyright
         run: poetry run pyright . --lib
 
@@ -37,7 +37,7 @@ jobs:
         run: poetry run pytest --junitxml=pytest_results_pmd.xml
 
       - name: Run behaviour tests
-        run: poetry run poetry run behave tests/features --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json
+        run: poetry run behave tests/features --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json
 
   dev:
     runs-on: ubuntu-latest
