@@ -22,13 +22,14 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install poetry
+        # run: |
+        #   pip install poetry
+        #   poetry export --format requirements.txt --without-hashes -o /requirements.txt
+        #   pip install --requirement /requirements.txt
+        #   pip install --no-deps --use-feature=in-tree-build /workspace/. 
         run: |
-          ls
-          cd csvcubed-pmd
-          pip install poetry
-          poetry export --format requirements.txt --without-hashes -o /requirements.txt
-          pip install --requirement /requirements.txt
-          pip install --no-deps --use-feature=in-tree-build /workspace/. 
+          poetry install
+          
       - name: Run pyright
         run: poetry run pyright . --lib
 
