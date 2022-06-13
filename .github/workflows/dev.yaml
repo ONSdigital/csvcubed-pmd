@@ -6,7 +6,7 @@ on:
       - 'issue1'
 
 jobs:
-  container:
+  Running Tests:
       runs-on: ubuntu-latest
       container:
         image: gsscogs/pythonversiontesting
