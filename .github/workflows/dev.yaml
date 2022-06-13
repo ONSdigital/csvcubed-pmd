@@ -24,8 +24,7 @@ jobs:
       - name: Install poetry
         # run: |
         #   pip install poetry
-        #   poetry export --format requirements.txt --without-hashes -o /requirements.tx
-        t
+        #   poetry export --format requirements.txt --without-hashes -o /requirements.txt
         #   pip install --requirement /requirements.txt
         #   pip install --no-deps --use-feature=in-tree-build /workspace/. 
         run: |
