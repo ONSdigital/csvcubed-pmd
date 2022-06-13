@@ -9,7 +9,7 @@ jobs:
   dev:
     runs-on: ubuntu-latest
     container:
-      image: pythonversiontesting
+      image: gsscogs/pythonversiontesting
     steps:
 
       - name: Checkout
