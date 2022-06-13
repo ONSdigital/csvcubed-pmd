@@ -20,7 +20,7 @@ RUN pip install --no-deps --use-feature=in-tree-build /workspace/.
 COPY entrypoint.sh /entrypoint.sh
 
 # Code file to execute when the docker container starts up (`entrypoint.sh`)
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/deploydocker/entrypoint.sh"]
 # # Run pyright
 # RUN poetry run pyright . --lib
 
