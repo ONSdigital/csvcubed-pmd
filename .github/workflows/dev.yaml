@@ -8,11 +8,16 @@ on:
 jobs:
   container:
       runs-on: ubuntu-latest
-      image: gsscogs/pythonversiontesting
+      container: gsscogs/pythonversiontesting
+      matrix:
+        python-version: ["3.8", "3.9", "3.10"]
+
       steps:
 
-      - name: setting python version
-        run: python:3.9
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
 
       - name: Install poetry
         run: |
