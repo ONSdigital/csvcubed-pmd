@@ -26,26 +26,27 @@ jobs:
           poetry install
           export python_dir=$(poetry run python -c "import site; print(site.getsitepackages()[0])") && patch -Nf -d "$python_dir/behave/formatter" -p1 < /cucumber-format.patch
 
-      - name: Run pyright
-        run: poetry run pyright . --lib
+      if: always()
+        - name: Run pyright
+          run: poetry run pyright . --lib
 
-      - name: Run unittests
-        run: poetry run pytest --junitxml=pytest_results_pmd.xml
+        - name: Run unittests
+          run: poetry run pytest --junitxml=pytest_results_pmd.xml
 
-      - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        if: always()
-        with:
-          files: "pytest_results_pmd.xml"
+        - name: Publish Unit Test Results
+          uses: EnricoMi/publish-unit-test-result-action@v1
+          #if: always()
+          with:
+            files: "pytest_results_pmd.xml"
 
-      - name: Run behaviour tests
-        run: poetry run behave tests/features --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json
+        - name: Run behaviour tests
+          run: poetry run behave tests/features --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json
 
-      - name: Publish Behave Test Results
-        uses: deblockt/cucumber-report-annotations-action@v1.7
-        with:
-          access-token: ${{ secrets.GITHUB_TOKEN }}
-          path: "tests/behaviour/test-results.json"
+        - name: Publish Behave Test Results
+          uses: deblockt/cucumber-report-annotations-action@v1.7
+          with:
+            access-token: ${{ secrets.GITHUB_TOKEN }}
+            path: "tests/behaviour/test-results.json"
 
   dev:
     runs-on: ubuntu-latest
