@@ -51,6 +51,13 @@ jobs:
         #run: poetry run behave tests/features --tags=-skip --junit -o tests/behaviour/test-results.xml
         run: poetry run behave tests/features --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json
 
+      - name: Upload behave test results from json file
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: behave tests
+          path: tests/behaviour/test-results.json
+
       - name: convert json to xml
         if: always()
         uses: fabasoad/yaml-json-xml-converter-action@main
@@ -66,13 +73,6 @@ jobs:
           cd tests/behaviour
           echo "${{ steps.json2xml.outputs.data }}" > test-results.xml
           cat test-results.xml
-
-      - name: Upload behave test results from xml file
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: behave tests
-          path: tests/behaviour/test-results.xml
 
       - name: Publish Behave Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
