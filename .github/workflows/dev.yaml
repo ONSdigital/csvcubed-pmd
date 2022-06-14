@@ -45,10 +45,10 @@ jobs:
         #run: poetry run behave tests/features --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json
 
       - name: behave file location
-      if: always()
-      run: |
-        cd tests/behaviour
-        ls
+        if: always()
+        run: |
+          cd tests/behaviour
+          ls
 
       #- name: convert json to xml
       #  if: always()
