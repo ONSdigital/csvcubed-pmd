@@ -52,7 +52,7 @@ Feature: Testing the csvw command group in the CLI
 
   Scenario: The `pull` command should allow the output directory to be overridden.
     When the pmdutils command CLI is run with "csvw pull --out output https://w3c.github.io/csvw/tests/test015/csv-metadata.json"
-    Then the CLI should fail with status code 1
+    Then the CLI should succeed
     And the file at "output/csv-metadata.json" should exist
     And the file at "output/tree-ops.csv" should exist
 
