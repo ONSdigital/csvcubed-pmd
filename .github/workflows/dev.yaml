@@ -7,7 +7,6 @@ on:
 
 jobs:
   testing:
-      if: always()
       runs-on: ubuntu-latest
       container:
         image: gsscogs/pythonversiontesting
@@ -31,15 +30,17 @@ jobs:
         run: poetry run pyright . --lib
 
       - name: Run unittests
+        if: always()
         run: poetry run pytest --junitxml=pytest_results_pmd.xml
 
       - name: Publish Unit Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
-        #if: always()
+        if: always()
         with:
           files: "pytest_results_pmd.xml"
 
       - name: Run behaviour tests
+        if: always()
         run: poetry run behave tests/features --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json
 
       - name: Publish Behave Test Results
