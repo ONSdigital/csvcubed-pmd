@@ -54,7 +54,7 @@ jobs:
 
       - name: Print json2xml result
         if: always()
-        run: echo "${{ steps.json2xml.outputs.data }}"
+        run: echo steps.json2xml.outputs.data
 
       - name: Publish Behave Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
@@ -66,6 +66,7 @@ jobs:
             !pytest_results_pmd.xml
 
   dev:
+    if: github.event_name == 'create'
     runs-on: ubuntu-latest
     steps:
 
