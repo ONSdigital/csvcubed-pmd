@@ -60,7 +60,9 @@ jobs:
         if: always()
         with:
           check_name: "Behave Test Results"
-          files: "${{ steps.json2xml.outputs.data }}"
+          files: |
+          'tests/behaviour/*.xml'
+          !pytest_results_pmd.xml
 
       #- name: Publish Behave Test Results
       #  uses: deblockt/cucumber-report-annotations-action@v1.7
