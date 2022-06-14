@@ -64,6 +64,12 @@ jobs:
           echo "${{ steps.json2xml.outputs.data }}" >> test-results.xml
           cat test-results.xml
 
+      - name: Upload test results from xml file
+        uses: actions/upload-artifact@v3
+        with:
+          name: behave tests
+          path: tests/behaviour/test-results.xml
+
       - name: Publish Behave Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
         if: always()
