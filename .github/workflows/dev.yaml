@@ -38,7 +38,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: unitests tests
-          path: tests/behaviour/pytest_results_pmd.xml
+          path: pytest_results_pmd.xml
 
       - name: Publish Unit Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
