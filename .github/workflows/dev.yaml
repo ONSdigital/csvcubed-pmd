@@ -57,11 +57,11 @@ jobs:
       #  if: always()
       #  run: echo "${{ steps.json2xml.outputs.data }}"
 
-      - name: Save xml to file
+      - name: Save output data to xml file
         if: always()
         run: |
           cd tests/behaviour
-          echo "${{ steps.json2xml.outputs.data }} > test-results.xml
+          echo "${{ steps.json2xml.outputs.data }}" > test-results.xml
           cat test-results.xml
 
       - name: Publish Behave Test Results
