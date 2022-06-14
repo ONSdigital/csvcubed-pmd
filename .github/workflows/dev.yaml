@@ -54,8 +54,9 @@ jobs:
 
       - name: Print json2xml result
         if: always()
-        run: echo "${{ steps.json2xml.outputs.data }}"
-        run: echo "${{ ls }}"
+        run: |
+          echo "${{ steps.json2xml.outputs.data }}"
+          echo "${{ ls }}"
 
       - name: Publish Behave Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
