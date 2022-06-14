@@ -64,7 +64,7 @@ jobs:
         if: always()
         run: |
           cd tests/behaviour
-          echo "${{ steps.json2xml.outputs.data }}" >> test-results.xml
+          echo "${{ steps.json2xml.outputs.data }}" > test-results.xml
           cat test-results.xml
 
       - name: Upload behave test results from xml file
