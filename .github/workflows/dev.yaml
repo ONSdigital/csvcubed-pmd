@@ -41,40 +41,29 @@ jobs:
 
       - name: Run behaviour tests
         if: always()
-        run: poetry run behave tests/features --tags=-skip --junit -o tests/behaviour/test-results.xml
-        #run: poetry run behave tests/features --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json
+        #run: poetry run behave tests/features --tags=-skip --junit -o tests/behaviour/test-results.xml
+        run: poetry run behave tests/features --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json
 
-      - name: behave file location
+      - name: convert json to xml
         if: always()
-        run: |
-          cd tests/behaviour
-          ls
-
-      #- name: convert json to xml
-      #  if: always()
-      #  uses: fabasoad/yaml-json-xml-converter-action@main
-      #  id: json2xml
-      #  with:
-      #    path: 'tests/behaviour/test-results.json'
-      #    from: 'json'
-      #    to: 'xml'
+        uses: fabasoad/yaml-json-xml-converter-action@main
+        id: json2xml
+        with:
+          path: 'tests/behaviour/test-results.json'
+          from: 'json'
+          to: 'xml'
 
       #- name: Print json2xml result
       #  if: always()
       #  run: echo "${{ steps.json2xml.outputs.data }}"
 
       - name: Publish Behave Test Results
-        uses: dorny/test-reporter@v1
+        uses: EnricoMi/publish-unit-test-result-action@v1
         if: always()
         with:
-          name: Behave Tests
-          path: tests/behaviour/test-results.xml
-          reporter: jest-junit
-        #uses: EnricoMi/publish-unit-test-result-action@v1
-        #if: always()
-        #with:
-        #  check_name: "Behave Test Results"
-        #  files: "tests/behaviour/test-results.xml"
+          check_name: "Behave Test Results"
+          files: steps.json2xml.outputs.data
+          #files: "tests/behaviour/test-results.xml"
 
   dev:
     if: github.event_name == 'create'
