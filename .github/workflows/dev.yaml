@@ -10,9 +10,8 @@ jobs:
       runs-on: ubuntu-latest
       container:
         image: gsscogs/pythonversiontesting
-      strategy:
-        matrix:
-          python-version: ["3.10"]
+      with:
+        python-version: "3.10"
 
       steps:
       - uses: actions/checkout@v3
@@ -46,11 +45,14 @@ jobs:
       - name: convert json to xml
         if: always()
         uses: fabasoad/yaml-json-xml-converter-action@main
-        id: yaml2xml
+        id: json2xml
         with:
           path: 'tests/behaviour/test-results.json'
           from: 'json'
           to: 'xml'
+
+      - name: Print json2xml result
+        run: echo "${{ steps.json2xml.outputs.data }}"
 
       - name: Publish Behave Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
