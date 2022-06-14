@@ -64,10 +64,12 @@ jobs:
       #  run: echo "${{ steps.json2xml.outputs.data }}"
 
       - name: Publish Behave Test Results
-        uses: mikepenz/action-junit-report@v3
+        uses: dorny/test-reporter@v1
         if: always()
         with:
-          report_paths: "tests/behaviour/test-results.xml"
+          name: Behave Tests
+          path: tests/behaviour/test-results.xml
+          reporter: jest-junit
         #uses: EnricoMi/publish-unit-test-result-action@v1
         #if: always()
         #with:
