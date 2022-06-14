@@ -4,9 +4,12 @@ on:
   push:
     branches:
       - 'issue1'
+  create:
+    tag:
 
 jobs:
   testing:
+    if: github.event_name == 'push'
       runs-on: ubuntu-latest
       container:
         image: gsscogs/pythonversiontesting
@@ -71,8 +74,9 @@ jobs:
         if: always()
         run: |
           cd tests/behaviour
-          echo "${{ steps.json2xml.outputs.data }}" > test-results.xml
-          cat test-results.xml
+          output = {{ steps.json2xml.outputs.data }}
+          modified=${output:1:-1}
+          echo $modified > test-results.xml
 
       - name: Publish Behave Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
