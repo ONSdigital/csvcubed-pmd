@@ -53,6 +53,7 @@ jobs:
           to: 'xml'
 
       - name: Print json2xml result
+        if: always()
         run: echo "${{ steps.json2xml.outputs.data }}"
 
       - name: Publish Behave Test Results
@@ -63,12 +64,6 @@ jobs:
           files: |
             'tests/behaviour/*.xml'
             !pytest_results_pmd.xml
-
-      #- name: Publish Behave Test Results
-      #  uses: deblockt/cucumber-report-annotations-action@v1.7
-      #  with:
-      #    access-token: ${{ secrets.GITHUB_TOKEN }}
-      #    path: "tests/behaviour/test-results.json"
 
   dev:
     runs-on: ubuntu-latest
