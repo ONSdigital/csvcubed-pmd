@@ -65,9 +65,9 @@ jobs:
 
       - name: Publish Behave Test Results
         uses: mikepenz/action-junit-report@v3
-          if: always()
-          with:
-            report_paths: "tests/behaviour/test-results.xml"
+        if: always()
+        with:
+          report_paths: "tests/behaviour/test-results.xml"
         #uses: EnricoMi/publish-unit-test-result-action@v1
         #if: always()
         #with:
