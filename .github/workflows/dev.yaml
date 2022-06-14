@@ -41,7 +41,7 @@ jobs:
 
       - name: Run behaviour tests
         if: always()
-        run: poetry run behave tests/features --tags=-skip --junit -o tests/behaviour/test-results.junit
+        run: poetry run behave tests/features --tags=-skip -f --formatter=junit.cucumber -o tests/behaviour/test-results.xml
 
       # - name: convert json to xml
       #   if: always()
