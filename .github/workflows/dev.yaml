@@ -56,7 +56,7 @@ jobs:
         if: always()
         run: |
           echo "${{ steps.json2xml.outputs.data }}"
-          echo "${{ ls }}"
+          $ echo $(ls)
 
       - name: Publish Behave Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
