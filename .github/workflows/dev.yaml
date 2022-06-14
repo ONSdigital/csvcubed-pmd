@@ -41,29 +41,27 @@ jobs:
 
       - name: Run behaviour tests
         if: always()
-        run: poetry run behave tests/features --tags=-skip -o tests/behaviour/test-results.xml
+        run: poetry run behave tests/features --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json
 
-      # - name: convert json to xml
-      #   if: always()
-      #   uses: fabasoad/yaml-json-xml-converter-action@main
-      #   id: json2xml
-      #   with:
-      #     path: 'tests/behaviour/test-results.json'
-      #     from: 'json'
-      #     to: 'xml'
+      - name: convert json to xml
+        if: always()
+        uses: fabasoad/yaml-json-xml-converter-action@main
+        id: json2xml
+        with:
+          path: 'tests/behaviour/test-results.json'
+          from: 'json'
+          to: 'xml'
 
-      # - name: Print json2xml result
-      #   if: always()
-      #   run: |
-      #     echo "${{ steps.json2xml.outputs.data }}"
-      #     echo $(ls)
+      - name: Print json2xml result
+        if: always()
+        run: echo "${{ steps.json2xml.outputs.data }}"
 
       - name: Publish Behave Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
         if: always()
         with:
           check_name: "Behave Test Results"
-          files: 'tests/behaviour/test-results.xml'
+          files: '*/**/tests/behaviour/test-results.xml'
 
   dev:
     if: github.event_name == 'create'
