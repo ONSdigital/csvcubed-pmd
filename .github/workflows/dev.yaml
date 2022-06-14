@@ -33,6 +33,13 @@ jobs:
         if: always()
         run: poetry run pytest --junitxml=pytest_results_pmd.xml
 
+      - name: Upload unittests test results from xml file
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: unitests tests
+          path: tests/behaviour/pytest_results_pmd.xml
+
       - name: Publish Unit Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
         if: always()
@@ -53,10 +60,6 @@ jobs:
           from: 'json'
           to: 'xml'
 
-      #- name: Print json2xml result
-      #  if: always()
-      #  run: echo "${{ steps.json2xml.outputs.data }}"
-
       - name: Save output data to xml file
         if: always()
         run: |
@@ -64,7 +67,8 @@ jobs:
           echo "${{ steps.json2xml.outputs.data }}" >> test-results.xml
           cat test-results.xml
 
-      - name: Upload test results from xml file
+      - name: Upload behave test results from xml file
+        if: always()
         uses: actions/upload-artifact@v3
         with:
           name: behave tests
@@ -76,7 +80,6 @@ jobs:
         with:
           check_name: "Behave Test Results"
           files: 'tests/behaviour/test-results.xml'
-          #files: "tests/behaviour/test-results.xml"
 
   dev:
     if: github.event_name == 'create'
