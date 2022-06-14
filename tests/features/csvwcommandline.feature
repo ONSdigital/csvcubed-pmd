@@ -5,44 +5,32 @@ Feature: Testing the csvw command group in the CLI
     Then the CLI should succeed
     And the file at "out/csv-metadata.json" should contain
       """
-      {
-        "@context": "http://www.w3.org/ns/csvw",
-        "url": "tree-ops.csv",
-        "dc:label": "metadata",
-        "tableSchema": {
-          "columns": [
-            {
-              "name": "GID",
-              "titles": [
-                "Generic Identifier",
-                "GID"
-              ]
-            },
-            {
-              "name": "on_street",
-              "titles": "On Street"
-            },
-            {
-              "name": "species",
-              "titles": "Species"
-            },
-            {
-              "name": "trim_cycle",
-              "titles": "Trim Cycle"
-            },
-            {
-              "name": "inventory_date",
-              "titles": "Inventory Date",
-              "datatype": {
-                "base": "date",
-                "format": "M/d/yyyy"
-              }
-            }
-          ],
-          "primaryKey": "GID"
-        }
-      }
-      """
+       {
+         "@context": "http://www.w3.org/ns/csvw",
+         "url": "tree-ops.csv",
+         "dc:label": "metadata",
+         "tableSchema": {
+           "columns": [{
+             "name": "GID",
+             "titles": ["Generic Identifier", "GID"]
+           }, {
+             "name": "on_street",
+             "titles": "On Street"
+           }, {
+             "name": "species",
+             "titles": "Species"
+           }, {
+             "name": "trim_cycle",
+             "titles": "Trim Cycle"
+           }, {
+             "name": "inventory_date",
+             "titles": "Inventory Date",
+             "datatype": {"base": "date", "format": "M/d/yyyy"}
+           }],
+           "primaryKey": "GID"
+         }
+       }
+    """
     And the file at "out/tree-ops.csv" should contain
       """
       GID,On Street,Species,Trim Cycle,Inventory Date
