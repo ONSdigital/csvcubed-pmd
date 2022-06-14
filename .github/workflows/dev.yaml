@@ -61,7 +61,8 @@ jobs:
         if: always()
         run: |
           cd tests/behaviour
-          ${{ steps.json2xml.outputs.data }} > test-results.xml
+          echo "${{ steps.json2xml.outputs.data }} > test-results.xml
+          cat test-results.xml
 
       - name: Publish Behave Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
