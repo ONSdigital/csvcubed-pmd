@@ -61,8 +61,8 @@ jobs:
         with:
           check_name: "Behave Test Results"
           files: |
-          'tests/behaviour/*.xml'
-          !pytest_results_pmd.xml
+            'tests/behaviour/*.xml'
+            !pytest_results_pmd.xml
 
       #- name: Publish Behave Test Results
       #  uses: deblockt/cucumber-report-annotations-action@v1.7
