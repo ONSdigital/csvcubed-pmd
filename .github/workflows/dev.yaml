@@ -51,7 +51,7 @@ jobs:
 
     - name: Run behaviour tests
       if: always()
-      run: poetry run behave tests/features --tags=-skip --junit -o tests/behaviour/test-results.xml
+      run: poetry run behave tests/features --tags=-skip --junit
       #run: poetry run behave tests/features --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json
 
     - name: Upload behave test results from json file
@@ -59,7 +59,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: behave tests
-        path: tests/behaviour/test-results.xml
+        path: reports/*.xml
 
     # - name: convert json to xml
     #   if: always()
@@ -83,7 +83,7 @@ jobs:
       if: always()
       with:
         check_name: "Behave Test Results"
-        files: 'tests/behaviour/test-results.xml'
+        files: 'reports/*.xml'
 
   dev:
     if: github.event_name == 'create'
