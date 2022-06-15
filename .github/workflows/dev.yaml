@@ -74,8 +74,8 @@ jobs:
       if: always()
       run: |
         cd tests/behaviour
-        echo "${{ steps.json2xml.outputs.data }}" >> test-results.xml
-      #head -c -1 < test-results.xml | tail -c +1 > test-results.xml
+        echo "${{ steps.json2xml.outputs.data }}" > test-results.xml
+        head -c -1 < test-results.xml | tail -c +1 > test-results.xml
       #sed -i 's/^@//' test-results.xml
 
     - name: Publish Behave Test Results
