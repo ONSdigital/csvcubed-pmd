@@ -9,7 +9,6 @@ on:
 
 jobs:
   testing:
-    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     container:
       image: gsscogs/pythonversiontesting
