@@ -41,7 +41,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: unitests tests
-        path: '*/**/pytest_results_pmd.xml'
+        path: pytest_results_pmd.xml
 
     - name: Publish Unit Test Results
       uses: EnricoMi/publish-unit-test-result-action@v1
@@ -75,7 +75,7 @@ jobs:
       run: |
         cd tests/behaviour
         echo "${{ steps.json2xml.outputs.data }}" >> test-results.xml
-        head -c -1 < test-results.xml | tail -c +1 > test-results.xml
+      #head -c -1 < test-results.xml | tail -c +1 > test-results.xml
       #sed -i 's/^@//' test-results.xml
 
     - name: Publish Behave Test Results
