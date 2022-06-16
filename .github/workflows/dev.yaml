@@ -67,8 +67,6 @@ jobs:
     #     files: 'reports/*.xml'
 
   dev:
-    env:
-      GIT_REF: ${{ github.ref }}
     if: ${{ always() && contains(needs.testing.result, 'success') }}
     #if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
@@ -95,7 +93,7 @@ jobs:
           push: true
           build-args: dev=true
           tags: |
-            gsscogs/pmdutils:dev:${{ (GIT_REF | sed -e 's/^.*\/v\(.*\)/\1/') }}
-            gsscogs/pmdutils:dev:${{ GIT_REF }}
+            gsscogs/pmdutils:dev:${{ (github.ref | sed -e 's/^.*\/v\(.*\)/\1/') }}
+            gsscogs/pmdutils:dev:${{ github.ref }}
       - name: Develop Image digest
         run: echo ${{ steps.docker_build_dev.outputs.digest }}
