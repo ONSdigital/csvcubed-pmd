@@ -69,7 +69,6 @@ jobs:
   dev:
     if: startsWith(github.ref, 'refs/tags/v') && ${{ (needs.testing.result=='success') }}
     needs: [testing]
-    #if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
 
