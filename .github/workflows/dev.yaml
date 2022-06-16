@@ -94,7 +94,9 @@ jobs:
           push: true
           build-args: dev=true
           tags: |
-            gsscogs/pmdutils:v1.0.3
+            gsscogs/pmdutils:dev
+            gsscogs/pmdutils:${{ github.ref.tag_name }}
+            gsscogs/pmdutils:${{ github.event.release.tag_name }}
           #${{ github.ref_tag }}
       - name: Develop Image digest
         run: echo ${{ steps.docker_build_dev.outputs.digest }}
