@@ -88,6 +88,8 @@ jobs:
       - name: Get tag version
         id: get_tag_version
         uses: battila7/get-version-action@v2
+      - name: Output tag version
+        id: output_tag_version
         run: echo ${{ steps.get_version.outputs.version-without-v }}
 
       - name: Build pmdutils:dev
@@ -99,7 +101,7 @@ jobs:
           push: true
           build-args: dev=true
           tags: |
-            gsscogs/pmdutils:version${{ steps.get_tag_version.outputs.tags }}.dev
+            gsscogs/pmdutils:version${{ steps.output_tag_version.outputs.tags }}.dev
           #gsscogs/pmdutils:dev
       - name: Develop Image digest
         run: echo ${{ steps.docker_build_dev.outputs.digest }}
