@@ -88,11 +88,7 @@ jobs:
       - name: Build and push
         id: gen_tags
         run: |
-          if [[ $GITHUB_REF == 'refs/tags/'* ]]; then
-            TAGS='["user/image:latest","user/image:'${GITHUB_REF/refs\/tags\//}'"]'
-          else
-            TAGS='["user/image:latest"]'
-          fi
+          TAGS='["user/image:latest","user/image:'${GITHUB_REF/refs\/tags\//}'"]'
           echo '::set-output name=tags::'$TAGS
 
       - name: Build pmdutils:dev
