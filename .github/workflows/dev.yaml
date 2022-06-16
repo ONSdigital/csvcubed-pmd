@@ -67,7 +67,7 @@ jobs:
     #     files: 'reports/*.xml'
 
   dev:
-    if: ${{ (needs.testing.result=='success') }} && startsWith(github.ref, 'refs/tags/v')
+    if: ${{ (needs.testing.result=='success') }} && github.ref=='refs/tags/v*'
     needs: [testing]
     runs-on: ubuntu-latest
     steps:
