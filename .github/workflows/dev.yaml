@@ -93,7 +93,7 @@ jobs:
           push: true
           build-args: dev=true
           tags: |
-            gsscogs/pmdutils:dev:${{ ($GIT_REF | sed -e 's/^.*\/v\(.*\)/\1/') }}
+            gsscogs/pmdutils:dev:${{ (GIT_REF | sed -e 's/^.*\/v\(.*\)/\1/') }}
             gsscogs/pmdutils:dev:${{ GIT_REF }}
       - name: Develop Image digest
         run: echo ${{ steps.docker_build_dev.outputs.digest }}
