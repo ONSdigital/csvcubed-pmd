@@ -93,10 +93,10 @@ jobs:
           file: deploydocker/Dockerfile
           push: true
           build-args: dev=true
+          tag_name: ${{ github.ref }}
           tags: |
             gsscogs/pmdutils:dev
-            gsscogs/pmdutils:${{ github.ref.tag_name }}
-            gsscogs/pmdutils:${{ github.event.release.tag_name }}
+            gsscogs/pmdutils:${{ tag_name }}
           #${{ github.ref_tag }}
       - name: Develop Image digest
         run: echo ${{ steps.docker_build_dev.outputs.digest }}
