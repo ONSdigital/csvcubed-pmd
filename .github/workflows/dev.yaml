@@ -67,8 +67,8 @@ jobs:
     #     files: 'reports/*.xml'
 
   dev:
-    if: ${{ (needs.testing.result=='success') }}
-    needs: [testing]
+    # if: ${{ (needs.testing.result=='success') }}
+    # needs: [testing]
     #if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
@@ -94,6 +94,7 @@ jobs:
           push: true
           build-args: dev=true
           tags: |
-            gsscogs/pmdutils:dev:${{ github.ref_name }}
+            gsscogs/pmdutils:dev:v1.0.2
+          #${{ github.ref_name }}
       - name: Develop Image digest
         run: echo ${{ steps.docker_build_dev.outputs.digest }}
