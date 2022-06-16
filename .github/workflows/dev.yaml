@@ -68,7 +68,7 @@ jobs:
 
   dev:
     if: |
-      startsWith(github.ref, 'refs/tags/v')
+      ${{ startsWith(github.ref, 'refs/tags/v') }}
       ${{ (needs.testing.result=='success') }}
     needs: [testing]
     runs-on: ubuntu-latest
