@@ -88,7 +88,7 @@ jobs:
       - name: Build and push
         id: gen_tags
         run: |
-          TAGS='["user/image:latest","user/image:'${GITHUB_REF/refs\/tags\//}'"]'
+          TAGS='[" gsscogs/pmdutils:versionlatest.dev","gsscogs/pmdutils:version'${GITHUB_REF/refs\/tags\//}'.dev"]'
           echo '::set-output name=tags::'$TAGS
 
       - name: Build pmdutils:dev
