@@ -67,7 +67,7 @@ jobs:
     #     files: 'reports/*.xml'
 
   dev:
-    if: github.event_name == 'create'
+    if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
 
@@ -92,6 +92,7 @@ jobs:
           push: true
           build-args: dev=true
           tags: |
-            gsscogs/pmdutils:dev
+            gsscogs/pmdutils:dev:$(echo $GIT_REF | sed -e 's/^.*\/v\(.*\)/\1/')
+            gsscogs/pmdutils:dev:$(echo $GIT_REF)
       - name: Develop Image digest
         run: echo ${{ steps.docker_build_dev.outputs.digest }}
