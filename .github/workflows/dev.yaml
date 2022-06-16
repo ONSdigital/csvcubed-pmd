@@ -94,10 +94,7 @@ jobs:
         id: docker_meta
         uses: crazy-max/ghaction-docker-meta@v1
         with:
-          images: l7r7/sample
           tag-custom: latest
-          tag-semver: |
-            {{raw}}
 
       - name: Build pmdutils:dev
         uses: docker/build-push-action@v2
