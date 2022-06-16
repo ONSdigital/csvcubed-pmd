@@ -100,7 +100,8 @@ jobs:
           push: true
           build-args: dev=true
           tags: |
-            gsscogs/pmdutils:version${{ fromJson(steps.gen_tags.outputs.tags) }}.dev
+            ${{ fromJson(steps.gen_tags.outputs.tags) }}
+          #gsscogs/pmdutils:version${{ fromJson(steps.gen_tags.outputs.tags) }}.dev
           #gsscogs/pmdutils:dev
       - name: Develop Image digest
         run: echo ${{ steps.docker_build_dev.outputs.digest }}
