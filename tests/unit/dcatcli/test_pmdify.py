@@ -151,7 +151,7 @@ def test_identification_of_csvcubed_output_type():
 def test_catalog_uris_for_csvcubed_output_types():
     assert (
         pmdify._get_catalog_uri_to_add_to(CsvCubedOutputType.SkosConceptScheme)
-        == "http://gss-data.org.uk/catalog/vocabularies"
+        == "http://gss-data.org.uk/catalog/vocabularie"
     )
     assert (
         pmdify._get_catalog_uri_to_add_to(CsvCubedOutputType.QbDataSet)
