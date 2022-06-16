@@ -9,7 +9,7 @@ Feature: Testing the csvw command group in the CLI
     And the RDF should not contain any URIs in the "http://www.w3.org/ns/dcat#" namespace
     And the RDF should contain
     """
-      <http://base-uri/single-measure-bulletin.csv#dataset> a <http://purl.org/linked-data/cube#DataSet>.
+      sonic<http://base-uri/single-measure-bulletin.csv#dataset> a <http://purl.org/linked-data/cube#DataSet>.
     """
 
   Scenario: The `pmdify` command should create a separate N-Quads file containing pmd-style catalog metadata.
