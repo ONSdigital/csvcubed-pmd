@@ -85,12 +85,9 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Get tag version
-        id: get_tag_version
-        uses: battila7/get-version-action@v2
-      - name: Output tag version
-        id: output_tag_version
-        run: echo ${{ steps.get_version.outputs.version-without-v }}
+      - id: get_version
+      uses: battila7/get-version-action@v2
+      - run: echo ${{ steps.get_version.outputs.version-without-v }}
 
       - name: Build pmdutils:dev
         uses: docker/build-push-action@v2
