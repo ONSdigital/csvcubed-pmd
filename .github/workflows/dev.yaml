@@ -88,9 +88,7 @@ jobs:
       - name: get tag
         id: get_version
         uses: battila7/get-version-action@v2
-        with:
-          tag: ${{ steps.get_version.outputs.version-without-v }}
-          #echo ${{ steps.get_version.outputs.version-without-v }}
+      - run: echo ${{ steps.get_version.outputs.version-without-v }}
 
       - name: Build pmdutils:dev
         uses: docker/build-push-action@v2
