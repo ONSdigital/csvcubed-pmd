@@ -3,7 +3,7 @@ name: build push dev image
 on:
   push:
     branches:
-      - 'issue1'
+      - 'main'
   create:
     tag:
 
