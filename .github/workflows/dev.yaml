@@ -97,7 +97,7 @@ jobs:
           push: true
           build-args: dev=true
           tags: |
-            gsscogs/pmdutils:dev
-            gsscogs/pmdutils:version${{ steps.get_version.outputs.version-without-v }}.dev
+            gsscogs/pmdutils:latest
+            gsscogs/pmdutils:${{ steps.get_version.outputs.version-without-v }}
       - name: Develop Image digest
         run: echo ${{ steps.docker_build_dev.outputs.digest }}
