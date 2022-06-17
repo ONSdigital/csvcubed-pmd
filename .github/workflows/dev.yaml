@@ -84,7 +84,8 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - id: get_version
+      - name: get_tag_version
+        id: get_version
         uses: battila7/get-version-action@v2
 
       - name: Build pmdutils:dev
