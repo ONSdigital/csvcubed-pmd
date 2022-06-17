@@ -4,15 +4,77 @@ on:
   push:
     branches:
       - 'main'
+  create:
+    tag:
 
 jobs:
+  testing:
+    runs-on: ubuntu-latest
+    container:
+      image: gsscogs/pythonversiontesting
+    strategy:
+      matrix:
+        python-version: ["3.10"]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install poetry
+      run: |
+        poetry install
+        export python_dir=$(poetry run python -c "import site; print(site.getsitepackages()[0])") && patch -Nf -d "$python_dir/behave/formatter" -p1 < /cucumber-format.patch
+
+    - name: Run pyright
+      run: poetry run pyright . --lib
+
+    - name: Run unittests
+      if: always()
+      run: poetry run pytest --junitxml=pytest_results_pmd.xml
+
+    - name: Upload unittests test results from xml file
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: unitests tests
+        path: pytest_results_pmd.xml
+
+    - name: Publish Unit Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v1
+      if: always()
+      with:
+        files: "pytest_results_pmd.xml"
+
+    - name: Run behaviour tests
+      if: always()
+      run: poetry run behave tests/features --tags=-skip --junit
+
+    - name: Upload behave test results from json file
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: behave tests
+        path: reports/*.xml
+
+    # - name: Publish Behave Test Results
+    #   uses: EnricoMi/publish-unit-test-result-action@v1
+    #   if: always()
+    #   with:
+    #     check_name: "Behave Test Results"
+    #     files: 'reports/*.xml'
+
   dev:
+    if: ${{ (needs.testing.result=='success') && startsWith(github.ref, 'refs/tags/v') }}
+    needs: [testing]
     runs-on: ubuntu-latest
     steps:
 
       - name: Checkout
         uses: actions/checkout@v2
-        
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       
@@ -21,6 +83,10 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: get_tag_version
+        id: get_version
+        uses: battila7/get-version-action@v2
 
       - name: Build pmdutils:dev
         uses: docker/build-push-action@v2
@@ -31,6 +97,7 @@ jobs:
           push: true
           build-args: dev=true
           tags: |
-            gsscogs/pmdutils:dev
+            gsscogs/pmdutils:latest
+            gsscogs/pmdutils:${{ steps.get_version.outputs.version-without-v }}
       - name: Develop Image digest
         run: echo ${{ steps.docker_build_dev.outputs.digest }}
