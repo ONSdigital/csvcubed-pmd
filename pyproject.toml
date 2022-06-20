@@ -21,7 +21,7 @@ unidecode = "*"
 uritemplate = "*"
 click = "^8.0.3"
 chardet = "^4.0.0"
-csvcubed-models = "0.1.1"
+csvcubed = {path = "../csvcubed"}
 
 [tool.poetry.dev-dependencies]
 csvcubed-devtools = "0.1.1"
