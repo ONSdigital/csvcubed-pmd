@@ -3,7 +3,7 @@ name: build push dev image
 on:
   push:
     branches:
-      - 'main'
+      - 'MuazzamChaud/issue3'
   create:
     tag:
 
@@ -57,14 +57,14 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: behave tests
-        path: reports/*.xml
+        path: reports/TESTS_uri.xml
 
-    # - name: Publish Behave Test Results
-    #   uses: EnricoMi/publish-unit-test-result-action@v1
-    #   if: always()
-    #   with:
-    #     check_name: "Behave Test Results"
-    #     files: 'reports/*.xml'
+    - name: Publish Behave Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v1
+      if: always()
+      with:
+        check_name: "Behave Test Results"
+        files: 'reports/*.xml'
 
   dev:
     if: ${{ (needs.testing.result=='success') && startsWith(github.ref, 'refs/tags/v') }}
