@@ -52,12 +52,12 @@ jobs:
       if: always()
       run: poetry run behave tests/features --tags=-skip --junit
 
-    - name: Upload behave test results from json file
+    - name: Upload behave test results from xml files
       if: always()
       uses: actions/upload-artifact@v3
       with:
         name: behave tests
-        path: reports/TESTS_uri.xml
+        path: reports/*.xml
 
     - name: Publish Behave Test Results
       uses: EnricoMi/publish-unit-test-result-action@v1
@@ -67,7 +67,7 @@ jobs:
         files: 'reports/*.xml'
 
   dev:
-    if: ${{ (needs.testing.result=='success') && startsWith(github.ref, 'refs/tags/v') }}
+    if: ${{ (needs.testing.result=='success') && startsWith(github.ref, 'refs/tags/v') && github.event_name == 'create' }}
     needs: [testing]
     runs-on: ubuntu-latest
     steps:
