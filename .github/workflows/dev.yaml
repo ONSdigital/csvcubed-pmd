@@ -52,6 +52,11 @@ jobs:
       if: always()
       run: poetry run behave tests/features --tags=-skip --junit
 
+    - name: fix broken xml files
+      run: |
+        perl -pe 's/&/&amp;/' TESTS-dcatcommandline.xml
+      #xml_file=${{ reports/TESTS-dcatcommandline.xml }} python3 csvcubed-pmd/src/csvcubedpmd/utils/rmbrokenchar.py
+        
     - name: Upload behave test results from xml files
       if: always()
       uses: actions/upload-artifact@v3
