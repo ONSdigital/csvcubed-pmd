@@ -54,7 +54,8 @@ jobs:
 
     - name: fix broken xml files
       run: |
-        perl -pe 's/[^\x09\x0A\x0D\x20-\x{D7FF}\x{E000}-\x{FFFD}\x{10000}-\x{10FFFF}]//' reports/TESTS-dcatcommandline.xml
+        perl -pe 's/[^\x01-\x{D7FF}\x{E000}-\x{FFFD}\x{10000}-\x{10FFFF}]//' reports/TESTS-dcatcommandline.xml
+      #perl -pe 's/[^\x09\x0A\x0D\x20-\x{D7FF}\x{E000}-\x{FFFD}\x{10000}-\x{10FFFF}]//' reports/TESTS-dcatcommandline.xml
       #perl -pe 's/&/&amp;/' reports/TESTS-dcatcommandline.xml
       #xml_file=${{ reports/TESTS-dcatcommandline.xml }} python3 csvcubed-pmd/src/csvcubedpmd/utils/rmbrokenchar.py
         
