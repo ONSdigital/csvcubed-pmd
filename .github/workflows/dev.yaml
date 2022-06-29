@@ -54,7 +54,7 @@ jobs:
 
     - name: fix broken xml files
       run: |
-        perl -i -pe 's/&/&amp;/' TESTS-dcatcommandline.xml
+        perl -pe 's/&/&amp;/' TESTS-dcatcommandline.xml
       #xml_file=${{ reports/TESTS-dcatcommandline.xml }} python3 csvcubed-pmd/src/csvcubedpmd/utils/rmbrokenchar.py
         
     - name: Upload behave test results from xml files
