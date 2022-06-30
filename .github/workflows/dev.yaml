@@ -52,9 +52,9 @@ jobs:
       if: always()
       run: poetry run behave tests/features --tags=-skip --junit
 
-    - name: fix broken xml files
+    - name: Remove broken characters from xml test files
       run: |
-        sed -i -e 's/[\x0A\x1B]//g' TESTS-*.xml
+        sed -i -e 's/[\x0A\x1B]//g' reports/TESTS-*.xml
 
       #perl -pi -e 's/[^\x09\x0A\x0D\x20-\x{D7FF}\x{E000}-\x{FFFD}\x{10000}-\x{10FFFF}]//g' reports/TESTS-dcatcommandline.xml
 
