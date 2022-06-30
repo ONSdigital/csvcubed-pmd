@@ -55,7 +55,7 @@ jobs:
     - name: fix broken xml files
       run: |
         string='\\\'
-        sed -i "s/$string//g" test.xml
+        sed -i "s/$string//g" reports/TESTS-dcatcommandline.xml
       #awk '{gsub(/\\esc/,"")} 1'  reports/TESTS-dcatcommandline.xml
       #perl -pi -e 's/[^\x09\x0A\x0D\x20-\x{D7FF}\x{E000}-\x{FFFD}\x{10000}-\x{10FFFF}]//g' reports/TESTS-dcatcommandline.xml
       #xml_file=${{ reports/TESTS-dcatcommandline.xml }} python3 csvcubed-pmd/src/csvcubedpmd/utils/rmbrokenchar.py
