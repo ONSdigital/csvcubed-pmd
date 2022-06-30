@@ -69,6 +69,6 @@ Feature: Testing the csvw command group in the CLI
 
   Scenario: The `find-where` command should return CSV-Ws which do *not* match an ASK query when the negate option is set
     Given the existing test-case files "dcatcli/*"
-    When the pmdutils command CLI is run with "csvws find-where --negate 'ASK WHERE { ?s a <http://www.w3.org/2004/02/skos/core#ConceptScheme>. }'"
+    When the pmdutils command CLI is run with "csvw find-where --negate 'ASK WHERE { ?s a <http://www.w3.org/2004/02/skos/core#ConceptScheme>. }'"
     Then the CLI should succeed
     And the CLI should print "single-measure-bulletin.csv-metadata.json"
