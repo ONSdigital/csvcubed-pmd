@@ -54,7 +54,7 @@ jobs:
 
     - name: fix broken xml files
       run: |
-        sed -i -e 's/\e//g' reports/TESTS-dcatcommandline.xml
+        perl -i -e 's/\e//g' reports/TESTS-dcatcommandline.xml
       #perl -i -pe 's/$string//g' reports/TESTS-dcatcommandline.xml
       #string='\\e'
       #sed -i -e "s/$string//g" reports/TESTS-dcatcommandline.xml
