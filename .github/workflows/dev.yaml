@@ -54,10 +54,12 @@ jobs:
 
     - name: fix broken xml files
       run: |
-        perl -pi -e 's/[\e]//g' reports/TESTS-dcatcommandline.xml
-      #string='\\e'
-      #sed -i -e "s/$string//g" reports/TESTS-dcatcommandline.xml
+        sed -i -e "s/[\x0A\x1B]//g" reports/TESTS-*.xml
+      #specialchar='\\e'
+      #sed -i -e "s/$specialchar//g" reports/TESTS-dcatcommandline.xml
+
       #perl -pi -e 's/[^\x09\x0A\x0D\x20-\x{D7FF}\x{E000}-\x{FFFD}\x{10000}-\x{10FFFF}]//g' reports/TESTS-dcatcommandline.xml
+
       #xml_file=${{ reports/TESTS-dcatcommandline.xml }} python3 csvcubed-pmd/src/csvcubedpmd/utils/rmbrokenchar.py
         
     - name: Upload behave test results from xml files
