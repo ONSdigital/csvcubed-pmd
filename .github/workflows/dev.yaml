@@ -54,7 +54,7 @@ jobs:
 
     - name: fix broken xml files
       run: |
-        sed -i -e "s/[\x0A\x1B]//g" reports/TESTS-*.xml
+        sed -i -e "s/[\x0A\x1B]//g" reports/*.xml
       #specialchar='\\e'
       #sed -i -e "s/$specialchar//g" reports/TESTS-dcatcommandline.xml
 
