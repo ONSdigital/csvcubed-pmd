@@ -1,7 +1,7 @@
 Feature: Testing the uri command group in the CLI
 
   Scenario: "the 'uri replace' command should get and read in a ttl file, but not be able to run without entering the uri's that need finding and replacing"
-    Given the existing test-case file "TurtleTestFile.ttl"
+    Given the existing test-case file "TurtleTestFileQ.ttl"
     When the pmdutils command CLI is run with "uri replace TurtleTestFile.ttl TurtleOutputFile.ttl"
     Then the CLI should fail with status code 1
 

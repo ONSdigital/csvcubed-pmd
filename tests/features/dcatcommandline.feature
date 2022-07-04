@@ -13,7 +13,7 @@ Feature: Testing the csvw command group in the CLI
     """
 
   Scenario: The `pmdify` command should create a separate N-Quads file containing pmd-style catalog metadata.
-    Given the existing test-case files "dcatcli/*"
+    Given the existing test-case files "dcatcliw/*"
     When the pmdutils command CLI is run with "dcat pmdify single-measure-bulletin.csv-metadata.json http://base-uri http://data-graph-uri http://catalog-metadata-graph-uri"
     Then the CLI should succeed
     And the file at "single-measure-bulletin.csv-metadata.json.nq" should exist
