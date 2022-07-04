@@ -6,6 +6,8 @@ on:
       - 'main'
   create:
     tag:
+  pull_request:
+    types:
 
 jobs:
   testing:
@@ -23,7 +25,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Install poetry
+    - name: Install all packages
       run: |
         poetry install
         export python_dir=$(poetry run python -c "import site; print(site.getsitepackages()[0])") && patch -Nf -d "$python_dir/behave/formatter" -p1 < /cucumber-format.patch

@@ -9,12 +9,11 @@ import os
 from pathlib import Path
 from typing import Iterable, List, Dict, Union, Set
 from urllib.parse import urlparse, urljoin
-import requests
 
-URLOrPath = Union[str, Path]
-"""
-Either a :class:`str` representing a URL or a :class:`~pathlib.Path` representing a local file.
-"""
+from csvcubed.utils.rdf import parse_graph_retain_relative
+import rdflib
+import requests
+from csvcubed.cli.inspect.metadataprocessor import add_triples_for_file_dependencies
 
 
 def _looks_like_uri(maybe_uri: str) -> bool:
@@ -43,31 +42,24 @@ def _get_context_base_url(context: Union[Dict, List, None]) -> str:
     return context_obj.get("@base", "")
 
 
-def _get_csvw_dependencies_absolute(metadata_file_url: str) -> Set[str]:
+def _get_csvw_dependencies(metadata_file_url: str) -> Set[str]:
     """
     :return: A set containing all of the URLs referenced by the CSV-W converted to absolute form.
     """
 
     return {
         path if _looks_like_uri(path) else urljoin(metadata_file_url, path)
-        for path in _get_csvw_dependencies_relative_to_metadata_file(metadata_file_url)
+        for path in _get_csvw_dependencies_some_relative(metadata_file_url)
     }
 
 
-def _get_csvw_dependencies_relative(metadata_file: URLOrPath) -> Set[str]:
-    """
-    :return: A list of all dependencies of a CSV-W which are defined relative to the CSV-W metadata file.
-    """
-    return {
-        path
-        for path in _get_csvw_dependencies_relative_to_metadata_file(metadata_file)
-        if not _looks_like_uri(path)
-    }
-
-
-def _get_csvw_dependencies_relative_to_metadata_file(
-    metadata_file: URLOrPath,
+def _get_csvw_dependencies_some_relative(
+    metadata_file: str,
 ) -> Set[str]:
+    """
+    :return: A set of all dependencies of a CSV-W.
+    """
+
     def _get_raw_dependencies(table_group: dict) -> Iterable[str]:
 
         # Embedded tables
@@ -99,13 +91,49 @@ def _get_csvw_dependencies_relative_to_metadata_file(
     table_group = _get_table_group_for_metadata_file(metadata_file)
 
     base_url = _get_context_base_url(table_group.get("@context"))
+
+    dependencies = list(_get_raw_dependencies(table_group))
+    dependencies += _get_rdf_file_dependencies(metadata_file)
+
     return {
         path if _looks_like_uri(path) else urljoin(base_url, path)
-        for path in _get_raw_dependencies(table_group)
+        for path in dependencies
     }
 
 
-def _get_table_group_for_metadata_file(metadata_file: URLOrPath) -> Dict:
+def _get_rdf_file_dependencies(metadata_file: str) -> List[str]:
+    """
+    Extract file dependencies defined in RDF.
+
+    If you want to load the triples, you should not use this function as this loads all dependent triples and
+    then throws most of them away.
+
+    :return: A list of paths specifying the location of file dependencies.
+    """
+
+    table_group_graph = rdflib.ConjunctiveGraph()
+
+    parse_graph_retain_relative(
+        metadata_file,
+        format="json-ld",
+        graph=table_group_graph.get_context(metadata_file),
+    )
+
+    add_triples_for_file_dependencies(
+        table_group_graph,
+        paths_relative_to=metadata_file,
+        follow_relative_path_dependencies_only=True,
+    )
+
+    return [
+        str(c.identifier)
+        for c in table_group_graph.contexts()
+        if isinstance(c.identifier, rdflib.URIRef)
+        and c.identifier != rdflib.URIRef(metadata_file)
+    ]
+
+
+def _get_table_group_for_metadata_file(metadata_file: str) -> Dict:
     if isinstance(metadata_file, str):
         return requests.get(metadata_file).json()
     else:
@@ -121,14 +149,17 @@ def pull(csvw_metadata_url: str, output_dir: Path) -> None:
     _ensure_dir_structure_exists(output_dir)
     _download_to_file(csvw_metadata_url, output_dir / csvw_metadata_file_name)
 
-    relative_dependencies = _get_csvw_dependencies_relative(csvw_metadata_url)
-    for relative_dependency_path in relative_dependencies:
+    base_path_for_relative_files = urlparse(urljoin(csvw_metadata_url, ".")).path
+
+    for absolute_dependency_path in _get_csvw_dependencies(csvw_metadata_url):
+        relative_dependency_path = os.path.relpath(
+            urlparse(absolute_dependency_path).path,
+            start=base_path_for_relative_files
+        )
+
         output_file = output_dir / relative_dependency_path
         _ensure_dir_structure_exists(output_file.parent)
-        _download_to_file(
-            urljoin(csvw_metadata_url, relative_dependency_path),
-            output_file,
-        )
+        _download_to_file(absolute_dependency_path, output_file)
 
 
 def _get_file_name_from_url(url: str) -> str:
