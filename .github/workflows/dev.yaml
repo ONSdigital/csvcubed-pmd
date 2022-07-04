@@ -3,7 +3,7 @@ name: build push dev image
 on:
   push:
     branches:
-      - 'MuazzamChaud/issue3'
+      - 'main'
   create:
     tag:
 
