@@ -63,7 +63,7 @@ Feature: Testing the csvw command group in the CLI
 
   Scenario: The `find-where` command should find return CSV-Ws matching an ASK query.
     Given the existing test-case files "dcatcli/*"
-    When the pmdutils command CLI is run with "csvw find-where 'ASK WHERE { ?s a <http://www.w3.org/2004/02/skos/core#ConceptScheme>. }'"
+    When the pmdutils command CLI is run with "csvws find-where 'ASK WHERE { ?s a <http://www.w3.org/2004/02/skos/core#ConceptScheme>. }'"
     Then the CLI should succeed
     And the CLI should print "period.csv-metadata.json"
 

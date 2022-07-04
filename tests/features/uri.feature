@@ -11,7 +11,7 @@ Feature: Testing the uri command group in the CLI
     Then the CLI should fail with status code 1
   
   Scenario: "the 'uri replace' command should find and replace URI's in the ttl file and continue to execute through warning messages"
-    Given the existing test-case file "TurtleTestFile.ttl"
+    Given the existing test-case file "TurtleTestFile.ttlQ"
     When the pmdutils command CLI is run with "uri replace TurtleTestFile.ttl TurtleOutputFile.ttl -v file:/tmp/qb-id-10002.csv http://example.com/some-dataset --force"
     Then the CLI should succeed
     And the CLI should print "WARNING:root:remaining 'file:/' URIs found on line 62:"
