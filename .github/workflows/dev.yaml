@@ -6,6 +6,8 @@ on:
       - 'main'
   create:
     tag:
+  pull_request:
+    types:
 
 jobs:
   testing:
