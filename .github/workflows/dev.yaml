@@ -52,11 +52,11 @@ jobs:
       if: always()
       run: poetry run behave tests/features --tags=-skip --junit
 
-  - name: Set up perl
+    - name: Set up perl
         uses: shogo82148/actions-setup-perl@v1
         with:
           perl-version: ${{ matrix.perl }}
-      - run: perl -pi -e 's/[\x0A\x1B]//g' reports/TESTS-*.xml
+    - run: perl -pi -e 's/[\x0A\x1B]//g' reports/TESTS-*.xml
 
     # - name: Remove broken characters from xml test files
     #   run: |
