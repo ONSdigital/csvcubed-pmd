@@ -10,9 +10,9 @@ from pathlib import Path
 from typing import Iterable, List, Dict, Union, Set
 from urllib.parse import urlparse, urljoin
 
+from csvcubed.utils.rdf import parse_graph_retain_relative
 import rdflib
 import requests
-from csvcubed.utils.rdf import parse_graph_retain_relative
 from csvcubed.cli.inspect.metadataprocessor import add_triples_for_file_dependencies
 
 URLOrPath = Union[str, Path]
@@ -156,14 +156,17 @@ def pull(csvw_metadata_url: str, output_dir: Path) -> None:
     _ensure_dir_structure_exists(output_dir)
     _download_to_file(csvw_metadata_url, output_dir / csvw_metadata_file_name)
 
-    relative_dependencies = _get_csvw_dependencies_relative(csvw_metadata_url)
-    for relative_dependency_path in relative_dependencies:
+    base_path_for_relative_files = urlparse(urljoin(csvw_metadata_url, ".")).path
+
+    for absolute_dependency_path in _get_csvw_dependencies(csvw_metadata_url):
+        relative_dependency_path = os.path.relpath(
+            urlparse(absolute_dependency_path).path,
+            start=base_path_for_relative_files
+        )
+
         output_file = output_dir / relative_dependency_path
         _ensure_dir_structure_exists(output_file.parent)
-        _download_to_file(
-            urljoin(csvw_metadata_url, relative_dependency_path),
-            output_file,
-        )
+        _download_to_file(absolute_dependency_path, output_file)
 
 
 def _get_file_name_from_url(url: str) -> str:

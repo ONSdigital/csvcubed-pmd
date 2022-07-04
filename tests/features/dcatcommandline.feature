@@ -36,7 +36,7 @@ Feature: Testing the csvw command group in the CLI
           pmdcat:graph <http://data-graph-uri>;
           pmdcat:metadataGraph <http://catalog-metadata-graph-uri>;
           dct:creator <https://www.gov.uk/government/organisations/hm-revenue-customs>;
-          dct:description "All bulletins provide details on percentage of one litre or less bottles. This information is provided on a yearly basis."@en;
+          dct:description "All bulletins provide details on percentage of one litre or less bottles. This information is provided on a yearly basis."^^<https://www.w3.org/ns/iana/media-types/text/markdown#Resource>;
           dct:identifier "single-measure-bottles-bulletin";
           dct:issued "2019-02-28T00:00:00"^^xsd:dateTime;
           dct:modified "2019-02-28T00:00:00"^^xsd:dateTime;
@@ -50,7 +50,7 @@ Feature: Testing the csvw command group in the CLI
       <http://base-uri/single-measure-bulletin.csv#dataset-catalog-record> a dcat:CatalogRecord;
           rdfs:label "single-measure-bottles-bulletin"@en;
           pmdcat:metadataGraph <http://catalog-metadata-graph-uri>;
-          dct:description "All bulletins provide details on percentage of one litre or less bottles. This information is provided on a yearly basis."@en;
+          dct:description "All bulletins provide details on percentage of one litre or less bottles. This information is provided on a yearly basis."^^<https://www.w3.org/ns/iana/media-types/text/markdown#Resource>;
           dct:title "single-measure-bottles-bulletin"@en;
           foaf:primaryTopic <http://base-uri/single-measure-bulletin.csv#dataset-catalog-entry> .
 
