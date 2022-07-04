@@ -4,7 +4,7 @@ Feature: Testing the csvw command group in the CLI
     When the pmdutils command CLI is run with "csvw pull https://w3c.github.io/csvw/tests/test015/csv-metadata.json"
     Then the CLI should succeed
     And the file at "out/csv-metadata.json" should contain
-    """
+      """
        {
          "@context": "http://www.w3.org/ns/csvw",
          "url": "tree-ops.csv",
@@ -32,11 +32,11 @@ Feature: Testing the csvw command group in the CLI
        }
     """
     And the file at "out/tree-ops.csv" should contain
-    """
+      """
       GID,On Street,Species,Trim Cycle,Inventory Date
       1,ADDISON AV,Celtis australis,Large Tree Routine Prune,10/18/2010
       2,EMERSON ST,Liquidambar styraciflua,Large Tree Routine Prune,6/2/2010
-    """
+      """
 
   Scenario: The `pull` command should allow the output directory to be overridden.
     When the pmdutils command CLI is run with "csvw pull --out output https://w3c.github.io/csvw/tests/test015/csv-metadata.json"

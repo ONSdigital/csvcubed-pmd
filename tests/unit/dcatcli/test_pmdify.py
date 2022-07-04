@@ -31,7 +31,7 @@ def test_extracting_metadata():
     assert existing_dcat_dataset.modified == datetime.datetime(2019, 2, 28)
     assert existing_dcat_dataset.comment == "some comment goes here"
     assert (
-        existing_dcat_dataset.description
+        existing_dcat_dataset.markdown_description
         == "All bulletins provide details on percentage of one litre or less bottles. This information is provided"
         + " on a yearly basis."
     )

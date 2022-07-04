@@ -193,7 +193,6 @@ def _generate_pmd_catalog_record(
     catalog_record = pmdcat.CatalogRecord(catalog_record_uri, catalog_uri)
     catalog_record.title = catalog_entry.title
     catalog_record.label = catalog_entry.label
-    catalog_record.description = catalog_entry.description
     catalog_record.comment = catalog_entry.comment
     catalog_record.issued = catalog_record.modified = datetime.now()
     catalog_record.metadata_graph = catalog_metadata_graph_uri
@@ -425,7 +424,7 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> pmdcat.Dataset:
     pmdcat_dataset.issued = dateutil.parser.isoparse(str(record["issued"]))
     pmdcat_dataset.modified = dateutil.parser.isoparse(str(record["modified"]))
     pmdcat_dataset.comment = _none_or_map(record.get("comment"), str)
-    pmdcat_dataset.description = _none_or_map(record.get("description"), str)
+    pmdcat_dataset.markdown_description = _none_or_map(record.get("description"), str)
     pmdcat_dataset.license = _none_or_map(record.get("license"), str)
     pmdcat_dataset.creator = _none_or_map(record.get("creator"), str)
     pmdcat_dataset.publisher = _none_or_map(record.get("publisher"), str)
