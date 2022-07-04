@@ -15,11 +15,6 @@ import rdflib
 import requests
 from csvcubed.cli.inspect.metadataprocessor import add_triples_for_file_dependencies
 
-URLOrPath = Union[str, Path]
-"""
-Either a :class:`str` representing a URL or a :class:`~pathlib.Path` representing a local file.
-"""
-
 
 def _looks_like_uri(maybe_uri: str) -> bool:
     """
@@ -47,7 +42,7 @@ def _get_context_base_url(context: Union[Dict, List, None]) -> str:
     return context_obj.get("@base", "")
 
 
-def _get_csvw_dependencies(metadata_file_url: URLOrPath) -> Set[str]:
+def _get_csvw_dependencies(metadata_file_url: str) -> Set[str]:
     """
     :return: A set containing all of the URLs referenced by the CSV-W converted to absolute form.
     """
@@ -59,7 +54,7 @@ def _get_csvw_dependencies(metadata_file_url: URLOrPath) -> Set[str]:
 
 
 def _get_csvw_dependencies_some_relative(
-    metadata_file: URLOrPath,
+    metadata_file: str,
 ) -> Set[str]:
     """
     :return: A set of all dependencies of a CSV-W.
@@ -106,7 +101,7 @@ def _get_csvw_dependencies_some_relative(
     }
 
 
-def _get_rdf_file_dependencies(metadata_file: URLOrPath) -> List[str]:
+def _get_rdf_file_dependencies(metadata_file: str) -> List[str]:
     """
     Extract file dependencies defined in RDF.
 
@@ -118,12 +113,10 @@ def _get_rdf_file_dependencies(metadata_file: URLOrPath) -> List[str]:
 
     table_group_graph = rdflib.ConjunctiveGraph()
 
-    metadata_file_path = str(metadata_file)
-
     parse_graph_retain_relative(
-        metadata_file_path,
+        metadata_file,
         format="json-ld",
-        graph=table_group_graph.get_context(metadata_file_path),
+        graph=table_group_graph.get_context(metadata_file),
     )
 
     add_triples_for_file_dependencies(
@@ -136,11 +129,11 @@ def _get_rdf_file_dependencies(metadata_file: URLOrPath) -> List[str]:
         str(c.identifier)
         for c in table_group_graph.contexts()
         if isinstance(c.identifier, rdflib.URIRef)
-        and c.identifier != rdflib.URIRef(metadata_file_path)
+        and c.identifier != rdflib.URIRef(metadata_file)
     ]
 
 
-def _get_table_group_for_metadata_file(metadata_file: URLOrPath) -> Dict:
+def _get_table_group_for_metadata_file(metadata_file: str) -> Dict:
     if isinstance(metadata_file, str):
         return requests.get(metadata_file).json()
     else:
