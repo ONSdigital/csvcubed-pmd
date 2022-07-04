@@ -50,7 +50,6 @@ Feature: Testing the csvw command group in the CLI
       <http://base-uri/single-measure-bulletin.csv#dataset-catalog-record> a dcat:CatalogRecord;
           rdfs:label "single-measure-bottles-bulletin"@en;
           pmdcat:metadataGraph <http://catalog-metadata-graph-uri>;
-          dct:description "All bulletins provide details on percentage of one litre or less bottles. This information is provided on a yearly basis."^^<https://www.w3.org/ns/iana/media-types/text/markdown#Resource>;
           dct:title "single-measure-bottles-bulletin"@en;
           foaf:primaryTopic <http://base-uri/single-measure-bulletin.csv#dataset-catalog-entry> .
 
