@@ -43,7 +43,7 @@ def _get_context_base_url(context: Union[Dict, List, None]) -> str:
     return context_obj.get("@base", "")
 
 
-def _get_csvw_dependencies(metadata_file_url: Optional[str]) -> Set[str]:
+def _get_csvw_dependencies(metadata_file_url: str) -> Set[str]:
     """
     :return: A set containing all of the URLs referenced by the CSV-W converted to absolute form.
     """
@@ -55,7 +55,7 @@ def _get_csvw_dependencies(metadata_file_url: Optional[str]) -> Set[str]:
 
 
 def _get_csvw_dependencies_some_relative(
-    metadata_file: Optional[str],
+    metadata_file: str,
 ) -> Set[str]:
     """
     :return: A set of all dependencies of a CSV-W.
@@ -134,7 +134,7 @@ def _get_rdf_file_dependencies(metadata_file: str) -> List[str]:
     ]
 
 
-def _get_table_group_for_metadata_file(metadata_file: Optional[str]) -> Dict:
+def _get_table_group_for_metadata_file(metadata_file: str) -> Dict:
     if isinstance(metadata_file, str) and _looks_like_uri(metadata_file):
         return requests.get(metadata_file).json()
     elif isinstance(metadata_file, str) and not _looks_like_uri(metadata_file):
@@ -145,7 +145,7 @@ def _get_table_group_for_metadata_file(metadata_file: Optional[str]) -> Dict:
             return json.load(f)
 
 
-def pull(csvw_metadata_url: Optional[str], output_dir: Path) -> None:
+def pull(csvw_metadata_url: str, output_dir: Path) -> None:
     """
     Pull all of the relative dependencies of a CSV-W metadata file down to the :obj:`output_dir`.
     """
