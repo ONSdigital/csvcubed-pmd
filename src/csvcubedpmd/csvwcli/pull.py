@@ -8,7 +8,7 @@ import json
 import os
 from pathlib import Path
 import shutil
-from typing import Iterable, List, Dict, Optional, Union, Set
+from typing import Iterable, List, Dict, Union, Set
 from urllib.parse import urlparse, urljoin
 
 from csvcubed.utils.rdf import parse_graph_retain_relative
@@ -137,11 +137,8 @@ def _get_rdf_file_dependencies(metadata_file: str) -> List[str]:
 def _get_table_group_for_metadata_file(metadata_file: str) -> Dict:
     if isinstance(metadata_file, str) and _looks_like_uri(metadata_file):
         return requests.get(metadata_file).json()
-    elif isinstance(metadata_file, str) and not _looks_like_uri(metadata_file):
-        with open(metadata_file, "r") as f:
-            return json.load(f)
     else:
-        with open(metadata_file.absolute(), "r") as f:
+        with open((Path(metadata_file)).absolute(), "r") as f:
             return json.load(f)
 
 
