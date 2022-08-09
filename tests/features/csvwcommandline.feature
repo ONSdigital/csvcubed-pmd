@@ -85,7 +85,7 @@ Feature: Testing the csvw command group in the CLI
     Then the CLI should succeed
     And the file at "out/period.csv-metadata.json" should exist
     And the file at "out/period.csv-metadata.json" should contain
-      """"
+      """
         {
           "@context": "http://www.w3.org/ns/csvw",
           "@id": "./period.csv#scheme/period",
@@ -132,4 +132,4 @@ Feature: Testing the csvw command group in the CLI
               }
           ]
       }   
-      """"
+      """
