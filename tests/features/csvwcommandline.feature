@@ -73,13 +73,26 @@ Feature: Testing the csvw command group in the CLI
     Then the CLI should succeed
     And the CLI should print "single-measure-bulletin.csv-metadata.json"
 
-  Scenario: The pull command should automatically copy over csv-metadata.json files to ouput_dir.
-    Given the existing test-case files "dcatcli/*"
-    When the pmdutils command CLI is run with "csvw pull single-measure-bulletin.csv-metadata.json"
+  Scenario: The pull command should support pulling CSV-Ws from filesystem paths.
+    Given the existing test-case files "dependencies/*"
+    When the pmdutils command CLI is run with "csvw pull sweden-at-eurovision-complete-dataset.csv-metadata.json"
     Then the CLI should succeed
-    And the file at "out/single-measure-bulletin.csv-metadata.json" should exist
+    And the file at "out/sweden-at-eurovision-complete-dataset.csv-metadata.json" should exist
+    And the file at "out/sweden-at-eurovision-complete-dataset.csv" should exist
+    And the file at "out/entrant.csv-metadata.json" should exist
+    And the file at "out/entrant.csv" should exist
+    And the file at "out/entrant.table.json" should exist
+    And the file at "out/language.csv-metadata.json" should exist
+    And the file at "out/language.csv" should exist
+    And the file at "out/language.table.json" should exist
+    And the file at "out/song.csv-metadata.json" should exist
+    And the file at "out/song.csv" should exist
+    And the file at "out/song.table.json" should exist
+    And the file at "out/year.csv-metadata.json" should exist
+    And the file at "out/year.csv" should exist
+    And the file at "out/year.table.json" should exist
 
-  Scenario: The pull command should automatically copy over period.csv-metadata.json file to ouput_dir.
+  Scenario: The pull command should support pulling period.csv-metadata.json from filesystem paths.
     Given the existing test-case files "dcatcli/*"
     When the pmdutils command CLI is run with "csvw pull period.csv-metadata.json"
     Then the CLI should succeed
@@ -133,3 +146,5 @@ Feature: Testing the csvw command group in the CLI
           ]
       }   
       """
+    And the file at "out/period.csv" should exist
+    And the file at "out/period.table.json" should exist

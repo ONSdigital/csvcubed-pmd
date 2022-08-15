@@ -14,6 +14,7 @@ from urllib.parse import urlparse, urljoin
 from csvcubed.utils.rdf import parse_graph_retain_relative
 import rdflib
 import requests
+from requests.exceptions import HTTPError
 from csvcubed.cli.inspect.metadataprocessor import add_triples_for_file_dependencies
 
 
@@ -135,10 +136,13 @@ def _get_rdf_file_dependencies(metadata_file: str) -> List[str]:
 
 
 def _get_table_group_for_metadata_file(metadata_file: str) -> Dict:
-    if isinstance(metadata_file, str) and _looks_like_uri(metadata_file):
-        return requests.get(metadata_file).json()
+    if _looks_like_uri(metadata_file):
+        r = requests.get(metadata_file)
+        if not r.ok:
+            raise HTTPError(f'Failed to get url {metadata_file} with status code {r.status_code}. With text respose: {r.text}')
+        return r.json()
     else:
-        with open((Path(metadata_file)).absolute(), "r") as f:
+        with open(Path(metadata_file), "r") as f:
             return json.load(f)
 
 
@@ -146,14 +150,14 @@ def pull(csvw_metadata_url: str, output_dir: Path) -> None:
     """
     Pull all of the relative dependencies of a CSV-W metadata file down to the :obj:`output_dir`.
     """
+    _ensure_dir_structure_exists(output_dir)
     if _looks_like_uri(csvw_metadata_url):
         csvw_metadata_file_name = _get_file_name_from_url(csvw_metadata_url)
-        _ensure_dir_structure_exists(output_dir)
         _download_to_file(csvw_metadata_url, output_dir / csvw_metadata_file_name)
     else:
-        _ensure_dir_structure_exists(output_dir)
+        csvw_metadata_url = str(Path(csvw_metadata_url).absolute())
         shutil.copy(csvw_metadata_url, output_dir)
-
+    
     base_path_for_relative_files = urlparse(urljoin(csvw_metadata_url, ".")).path
 
     for absolute_dependency_path in _get_csvw_dependencies(csvw_metadata_url):
@@ -176,10 +180,10 @@ def _get_file_name_from_url(url: str) -> str:
 def _download_to_file(rel_dep_url: str, output_file: Path) -> None:
     with open(output_file, "wb+") as f:
         response = requests.get(rel_dep_url)
+        if not response.ok:
+            raise HTTPError(f'Failed to get url {rel_dep_url} with status code {response.status_code}. With text respose: {response.text}')
         for chunk in response.iter_content(chunk_size=1024):
             f.write(chunk)
 
 def _ensure_dir_structure_exists(dir_path: Path) -> None:
-    if not dir_path.exists():
-        _ensure_dir_structure_exists(dir_path.parent)
-        dir_path.mkdir()
+     dir_path.mkdir(exist_ok=True, parents=True)
