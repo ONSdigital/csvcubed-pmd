@@ -72,3 +72,79 @@ Feature: Testing the csvw command group in the CLI
     When the pmdutils command CLI is run with "csvw find-where --negate 'ASK WHERE { ?s a <http://www.w3.org/2004/02/skos/core#ConceptScheme>. }'"
     Then the CLI should succeed
     And the CLI should print "single-measure-bulletin.csv-metadata.json"
+
+  Scenario: The pull command should support pulling CSV-Ws from filesystem paths.
+    Given the existing test-case files "dependencies/*"
+    When the pmdutils command CLI is run with "csvw pull sweden-at-eurovision-complete-dataset.csv-metadata.json"
+    Then the CLI should succeed
+    And the file at "out/sweden-at-eurovision-complete-dataset.csv-metadata.json" should exist
+    And the file at "out/sweden-at-eurovision-complete-dataset.csv" should exist
+    And the file at "out/entrant.csv-metadata.json" should exist
+    And the file at "out/entrant.csv" should exist
+    And the file at "out/entrant.table.json" should exist
+    And the file at "out/language.csv-metadata.json" should exist
+    And the file at "out/language.csv" should exist
+    And the file at "out/language.table.json" should exist
+    And the file at "out/song.csv-metadata.json" should exist
+    And the file at "out/song.csv" should exist
+    And the file at "out/song.table.json" should exist
+    And the file at "out/year.csv-metadata.json" should exist
+    And the file at "out/year.csv" should exist
+    And the file at "out/year.table.json" should exist
+
+  Scenario: The pull command should support pulling period.csv-metadata.json from filesystem paths.
+    Given the existing test-case files "dcatcli/*"
+    When the pmdutils command CLI is run with "csvw pull period.csv-metadata.json"
+    Then the CLI should succeed
+    And the file at "out/period.csv-metadata.json" should exist
+    And the file at "out/period.csv-metadata.json" should contain
+      """
+        {
+          "@context": "http://www.w3.org/ns/csvw",
+          "@id": "./period.csv#scheme/period",
+          "url": "period.csv",
+          "tableSchema": "period.table.json",
+          "rdfs:seeAlso": [
+              {
+                  "@id": "./period.csv#scheme/period",
+                  "@type": [
+                      "http://www.w3.org/ns/dcat#Resource",
+                      "http://www.w3.org/ns/dcat#Dataset",
+                      "http://www.w3.org/2000/01/rdf-schema#Resource",
+                      "http://www.w3.org/2004/02/skos/core#ConceptScheme"
+                  ],
+                  "http://purl.org/dc/terms/identifier": [
+                      {
+                          "@value": "Period"
+                      }
+                  ],
+                  "http://purl.org/dc/terms/issued": [
+                      {
+                          "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                          "@value": "2021-11-11T11:01:55.462050"
+                      }
+                  ],
+                  "http://purl.org/dc/terms/modified": [
+                      {
+                          "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                          "@value": "2021-11-11T11:01:55.462050"
+                      }
+                  ],
+                  "http://purl.org/dc/terms/title": [
+                      {
+                          "@language": "en",
+                          "@value": "Period"
+                      }
+                  ],
+                  "http://www.w3.org/2000/01/rdf-schema#label": [
+                      {
+                          "@language": "en",
+                          "@value": "Period"
+                      }
+                  ]
+              }
+          ]
+      }   
+      """
+    And the file at "out/period.csv" should exist
+    And the file at "out/period.table.json" should exist
