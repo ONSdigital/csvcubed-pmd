@@ -1,4 +1,4 @@
-name: sonarcloudCheck
+name: Build
 on:
   push:
     branches:
