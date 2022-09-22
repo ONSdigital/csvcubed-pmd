@@ -19,4 +19,4 @@ def ask(query: str, graph: Graph) -> bool:
     else:
         raise Exception(f"Unexpected number of results for ASK query {len(results)}.")
 
-url = "http://example.com"
+url = "http://example.com/cheese"
