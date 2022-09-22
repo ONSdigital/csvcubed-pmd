@@ -18,3 +18,5 @@ def ask(query: str, graph: Graph) -> bool:
             raise Exception(f"Unexpected ASK query response type {type(result)}")
     else:
         raise Exception(f"Unexpected number of results for ASK query {len(results)}.")
+
+url = "http://example.com/cheese"
