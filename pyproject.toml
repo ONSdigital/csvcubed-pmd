@@ -14,17 +14,17 @@ version = "0.1.0-dev"
 csvw = "*"
 pandas = "*"
 pyparsing = "~=2.4.7"
-python = "^3.9"
+python = ">=3.9,<3.12"
 rdflib = "*"
 requests = "*"
 unidecode = "*"
 uritemplate = "*"
 click = "^8.0.3"
 chardet = "^4.0.0"
-csvcubed = "0.1.4"
+csvcubed = "0.3.2"
 
 [tool.poetry.dev-dependencies]
-csvcubed-devtools = "0.1.1"
+csvcubed-devtools = "0.1.9"
 pytest-recording = "^0.12.0"
 
 [build-system]

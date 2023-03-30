@@ -15,7 +15,7 @@ from csvcubed.utils.rdf import parse_graph_retain_relative
 import rdflib
 import requests
 from requests.exceptions import HTTPError
-from csvcubed.cli.inspect.metadataprocessor import add_triples_for_file_dependencies
+from csvcubed.utils.tableschema import add_triples_for_file_dependencies
 
 
 def _looks_like_uri(maybe_uri: str) -> bool:
@@ -63,7 +63,6 @@ def _get_csvw_dependencies_some_relative(
     """
 
     def _get_raw_dependencies(table_group: dict) -> Iterable[str]:
-
         # Embedded tables
         tables = table_group.get("tables", [])
 
@@ -139,7 +138,9 @@ def _get_table_group_for_metadata_file(metadata_file: str) -> Dict:
     if _looks_like_uri(metadata_file):
         r = requests.get(metadata_file)
         if not r.ok:
-            raise HTTPError(f'Failed to get url {metadata_file} with status code {r.status_code}. With text respose: {r.text}')
+            raise HTTPError(
+                f"Failed to get url {metadata_file} with status code {r.status_code}. With text respose: {r.text}"
+            )
         return r.json()
     else:
         with open(Path(metadata_file), "r") as f:
@@ -157,13 +158,12 @@ def pull(csvw_metadata_url: str, output_dir: Path) -> None:
     else:
         csvw_metadata_url = str(Path(csvw_metadata_url).absolute())
         shutil.copy(csvw_metadata_url, output_dir)
-    
+
     base_path_for_relative_files = urlparse(urljoin(csvw_metadata_url, ".")).path
 
     for absolute_dependency_path in _get_csvw_dependencies(csvw_metadata_url):
         relative_dependency_path = os.path.relpath(
-            urlparse(absolute_dependency_path).path,
-            start=base_path_for_relative_files
+            urlparse(absolute_dependency_path).path, start=base_path_for_relative_files
         )
 
         output_file = output_dir / relative_dependency_path
@@ -177,13 +177,17 @@ def pull(csvw_metadata_url: str, output_dir: Path) -> None:
 def _get_file_name_from_url(url: str) -> str:
     return os.path.basename(urlparse(url).path)
 
+
 def _download_to_file(rel_dep_url: str, output_file: Path) -> None:
     with open(output_file, "wb+") as f:
         response = requests.get(rel_dep_url)
         if not response.ok:
-            raise HTTPError(f'Failed to get url {rel_dep_url} with status code {response.status_code}. With text respose: {response.text}')
+            raise HTTPError(
+                f"Failed to get url {rel_dep_url} with status code {response.status_code}. With text respose: {response.text}"
+            )
         for chunk in response.iter_content(chunk_size=1024):
             f.write(chunk)
 
+
 def _ensure_dir_structure_exists(dir_path: Path) -> None:
-     dir_path.mkdir(exist_ok=True, parents=True)
+    dir_path.mkdir(exist_ok=True, parents=True)

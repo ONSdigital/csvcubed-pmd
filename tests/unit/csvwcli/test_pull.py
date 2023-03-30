@@ -68,15 +68,25 @@ def test_get_relative_dependencies():
 
 @pytest.mark.vcr
 def test_get_tableschema_dependencies():
-    base = (
-        "https://ci.ukstats.dev/job/GSS_data/job/Trade/job/csvcubed/job/HMRC-alcohol-bulletin/job/"
-        "HMRC-alcohol-bulletin/lastSuccessfulBuild/artifact/outputs"
+    base = "https://raw.githubusercontent.com/GSS-Cogs/csvcubed-demo/main/sweden_at_eurovision_no_missing/convention_out"
+    dependencies = _get_csvw_dependencies(
+        f"{base}/sweden-at-eurovision-no-missing.csv-metadata.json"
     )
-    dependencies = _get_csvw_dependencies(f"{base}/alcohol-sub-type.csv-metadata.json")
 
     assert dependencies == {
-        f"{base}/alcohol-sub-type.csv",
-        f"{base}/alcohol-sub-type.table.json",
+        f"{base}/entrant.csv",
+        f"{base}/entrant.table.json",
+        f"{base}/entrant.csv-metadata.json",
+        f"{base}/language.csv",
+        f"{base}/language.table.json",
+        f"{base}/language.csv-metadata.json",
+        f"{base}/song.csv",
+        f"{base}/song.table.json",
+        f"{base}/song.csv-metadata.json",
+        f"{base}/year.csv",
+        f"{base}/year.table.json",
+        f"{base}/year.csv-metadata.json",
+        f"{base}/sweden-at-eurovision-no-missing.csv",
     }
 
 
