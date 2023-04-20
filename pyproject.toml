@@ -19,12 +19,11 @@ rdflib = "*"
 requests = "*"
 unidecode = "*"
 uritemplate = "*"
-click = "^8.0.3"
 chardet = "^4.0.0"
-csvcubed = "0.3.2"
 
 [tool.poetry.dev-dependencies]
 csvcubed-devtools = "0.1.9"
+csvcubed="0.3.6"
 pytest-recording = "^0.12.0"
 
 [build-system]
