@@ -21,7 +21,7 @@ unidecode = "*"
 uritemplate = "*"
 click = "^8.0.3"
 chardet = "^4.0.0"
-csvcubed = "0.3.2"
+csvcubed = "0.4.0"
 
 [tool.poetry.dev-dependencies]
 csvcubed-devtools = "0.1.9"
