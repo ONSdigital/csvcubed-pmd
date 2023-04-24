@@ -23,7 +23,7 @@ chardet = "^4.0.0"
 
 [tool.poetry.dev-dependencies]
 csvcubed-devtools = "0.1.9"
-csvcubed="0.3.6"
+csvcubed=">=0.4.0"
 pytest-recording = "^0.12.0"
 
 [build-system]
@@ -36,7 +36,7 @@ exclude = [
   "**/tests",
   "**/.tox",
 ]
-pythonVersion = "3.10"
+pythonVersion = "3.11"
 
 [tool.poetry.scripts]
 pmdutils = 'csvcubedpmd.main:entry_point'

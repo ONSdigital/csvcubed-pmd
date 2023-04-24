@@ -209,13 +209,13 @@ files = [
 
 [[package]]
 name = "csvcubed"
-version = "0.3.6"
+version = "0.4.0"
 description = "A tool to generate RDF Data Cube style CSV-W cubes from tidy CSV files. Part of the csvcubed family."
 category = "dev"
 optional = false
 python-versions = ">=3.9,<3.12"
 files = [
-    {file = "csvcubed-0.3.6-py3-none-any.whl", hash = "sha256:fe74f679fb575b57ac91bd78d8f12b31ee36ac56a38486617b3048ccae9f4ae1"},
+    {file = "csvcubed-0.4.0-py3-none-any.whl", hash = "sha256:e78ab4aabcf96c2648b8211487d048a290d20911ea727ff01fe475e57eb7ab8e"},
 ]
 
 [package.dependencies]
@@ -1356,4 +1356,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.12"
-content-hash = "a0954ec1c2877f04aefbbefdc53b2a15879e66c8a3cd32d8674c35a0a6b75eca"
+content-hash = "68651c6c3207e3d018cdb2a24a13c066f5c3a12c1926efdb35b0098f84b5336c"

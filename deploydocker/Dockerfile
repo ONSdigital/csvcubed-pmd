@@ -1,5 +1,5 @@
 # For more information, please refer to https://aka.ms/vscode-docker-python
-FROM python:3.9
+FROM python:3.11
 
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -15,4 +15,3 @@ COPY . /workspace/
 RUN pip install poetry
 RUN poetry export --format requirements.txt --without-hashes -o /requirements.txt
 RUN pip install --requirement /requirements.txt
-RUN pip install --no-deps --use-feature=in-tree-build /workspace/.
