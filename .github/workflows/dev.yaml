@@ -101,7 +101,8 @@ jobs:
           git config --global user.name "Auto-version-incrementer"
       - name: Commit auto-incrementer changes to existing tag
         run: |
-          git add pyproject.toml
+         git config --global safe.directory '*' # To suppress  fatal: detected dubious ownership in repository at ...
+         git add pyproject.toml
           git commit -m "Updating the release version in pyproject.toml"
           git tag -f $(echo $GIT_REF | sed -e 's/^.*\/v\(.*\)/v\1/')
       - name: Push tag changes back to origin
