@@ -12,7 +12,5 @@ WORKDIR /workspace
 COPY . /workspace/
 
 # Set up pip, poetry, and install dependencies
-RUN pip install poetry
-RUN poetry export --format requirements.txt --without-hashes -o /requirements.txt
-RUN pip install --requirement /requirements.txt
+RUN pip install .
 RUN pip install csvcubed
