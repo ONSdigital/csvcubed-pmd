@@ -4,7 +4,7 @@ PMDCAT
 """
 import rdflib
 from rdflib import Namespace, URIRef, Literal
-from typing import Annotated, Optional
+from typing import Annotated, Optional, Set
 from abc import ABC
 from datetime import datetime
 from csvcubedmodels.rdf.triple import Triple, InverseTriple, PropertyStatus
@@ -55,6 +55,21 @@ class DataCube(DatasetContents):
         self.rdf_types.add(PMDCAT.DataCube)
 
 
+class Distribution(dcat.Distribution):
+    """HoldsCatalog Metadata."""
+
+    metadata_graph: Annotated[
+        str, Triple(PMDCAT.metadataGraph, PropertyStatus.mandatory, URIRef)
+    ]
+    
+    """Graph where the PMDCAT/DCAT metadata is stored."""
+    pmdcat_graph: Annotated[str, Triple(PMDCAT.graph, PropertyStatus.mandatory, URIRef)]
+
+    def __init__(self, uri: str):
+        dcat.Distribution.__init__(self, uri)
+        self.rdf_types.add(PMDCAT.Distribution)
+
+
 class Dataset(dcat.Dataset):
     """HoldsCatalog Metadata."""
 
@@ -83,10 +98,15 @@ class Dataset(dcat.Dataset):
     update_due_on: Annotated[
         datetime, Triple(GDP.updateDueOn, PropertyStatus.recommended, Literal)
     ]
+    #This miht be wrong(probably is)
+    distribution: Annotated[ Set[Resource[Distribution]],
+         Triple(DCAT.distribution, PropertyStatus.recommended, URIRef)
+    ]
 
     def __init__(self, uri: str):
         dcat.Dataset.__init__(self, uri)
         self.rdf_types.add(PMDCAT.Dataset)
+        self.distribution = set()
 
 
 class CatalogRecord(dcat.CatalogRecord):
