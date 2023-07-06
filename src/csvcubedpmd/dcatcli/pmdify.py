@@ -8,7 +8,7 @@ import json
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import Optional, Any, Callable, Tuple, List
+from typing import Optional, Any, Callable, Tuple, List, Union
 from urllib.parse import urlparse, urljoin
 
 import dateutil.parser
@@ -127,6 +127,15 @@ def _set_pmdcat_type_on_dataset_contents(
             PREFIX pmdcat:  <http://publishmydata.com/pmdcat#>
 
             INSERT { ?dataset a pmdcat:DataCube. } WHERE { [] pmdcat:datasetContents ?dataset. }
+            """
+        )
+    if csvw_type == CsvCubedOutputType.QbDataSet:
+        csvw_rdf_graph.update(
+            """           
+            PREFIX qb:      <http://purl.org/linked-data/cube#>
+            PREFIX pmdcat:  <http://publishmydata.com/pmdcat#>
+
+            INSERT { ?distribution a pmdcat:DataCube. } WHERE { [] pmdcat:datasetContents ?distribution. }
             """
         )
     elif csvw_type == CsvCubedOutputType.SkosConceptScheme:
@@ -359,7 +368,7 @@ def _delete_existing_dcat_dataset_metadata(csvw_graph: Graph) -> None:
     )
 
 
-def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> pmdcat.Dataset:
+def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> Union[pmdcat.Dataset, pmdcat.Distribution]:
     """
     :return: a :class:`csvcubedpmd.models.rdf.pmdcat.Dataset` to avoid need to convert from dcat to pmdcat object.
     """
@@ -370,7 +379,7 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> pmdcat.Dataset:
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX pmdcat:  <http://publishmydata.com/pmdcat#>
     
-        SELECT ?dataset ?title ?label ?issued ?modified ?comment ?description ?license ?creator ?publisher 
+        SELECT ?dataset ?distribution ?title ?label ?issued ?modified ?comment ?description ?license ?creator ?publisher 
             (GROUP_CONCAT(?landingPage ; separator='|') as ?landingPages) 
             (GROUP_CONCAT(?theme; separator='|') as ?themes) 
             (GROUP_CONCAT(?keyword; separator='|') as ?keywords) 
@@ -385,12 +394,24 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> pmdcat.Dataset:
                         ?dataset a pmdcat:Dataset.
                     }
                 }
+                SELECT DISTINCT ?distribution
+                WHERE {
+                    {
+                        ?distribution a dcat:distribution.        
+                    } UNION {
+                        ?distribution a pmdcat:distribution.
+                    }
+                }
             }
         
             ?dataset dcterms:title ?title;
                 rdfs:label ?label;
                 dcterms:issued ?issued;
                 dcterms:modified ?modified.
+            
+            ?distribution dcterms:title ?title;
+                rdfs:label ?label;
+                dcterms:description ?description.
 
             OPTIONAL { ?dataset rdfs:comment ?comment }.
             OPTIONAL { ?dataset dcterms:description ?description }.
@@ -402,7 +423,7 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> pmdcat.Dataset:
             OPTIONAL { ?dataset dcat:keyword ?keyword }.
             OPTIONAL { ?dataset dcat:contactPoint ?contactPoint }.
             OPTIONAL { ?dataset dcterms:identifier ?identifier }.   
-            OPTIONAL { ?dataset pmdcat:datasetContents ?datasetContents }.           
+            OPTIONAL { ?dataset pmdcat:datasetContents ?datasetContents }.       
         }
         """
 
@@ -419,12 +440,15 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> pmdcat.Dataset:
     record = results[0].asdict()
 
     pmdcat_dataset = pmdcat.Dataset(str(record["dataset"]))
+    pmdcat_distribution = pmdcat.Distribution(str(record["distribution"]))
     pmdcat_dataset.title = str(record["title"])
+    pmdcat_distribution.title = (str(record["title"]))
     pmdcat_dataset.label = str(record["label"])
     pmdcat_dataset.issued = dateutil.parser.isoparse(str(record["issued"]))
     pmdcat_dataset.modified = dateutil.parser.isoparse(str(record["modified"]))
     pmdcat_dataset.comment = _none_or_map(record.get("comment"), str)
     pmdcat_dataset.markdown_description = _none_or_map(record.get("description"), str)
+    pmdcat_distribution.description = (str(record["description"]))
     pmdcat_dataset.license = _none_or_map(record.get("license"), str)
     pmdcat_dataset.creator = _none_or_map(record.get("creator"), str)
     pmdcat_dataset.publisher = _none_or_map(record.get("publisher"), str)
