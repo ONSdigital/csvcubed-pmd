@@ -1,11 +1,42 @@
 """
-This script is used to install csv2rdf inside the Windows environment of a GitHub Action Runner.
+This script is used to install csv2rdf and csvlint inside the Windows environment of a GitHub Action Runner.
 """
 
 $path = $env:PATH
 
 $initialWorkingDir = $pwd
 
+Write-Output "=== Installing csvlint ==="
+
+mkdir csvlint
+cd csvlint
+
+Invoke-WebRequest -Uri https://curl.se/windows/dl-7.86.0/curl-7.86.0-win64-mingw.zip -OutFile "curl.zip"
+Expand-Archive -LiteralPath curl.zip -DestinationPath .
+cp curl-7.86.0-win64-mingw\bin\libcurl-x64.dll curl-7.86.0-win64-mingw\bin\libcurl.dll
+cp curl-7.86.0-win64-mingw\bin\* C:\hostedtoolcache\windows\Ruby\2.4.10\x64\bin
+
+$curlExe = (Get-Item curl-7.86.0-win64-mingw\bin\curl.exe | Resolve-Path).Path.Substring(38)
+
+
+gem install bundle
+bundle init
+bundle add i18n --version "~> 1.12.0"
+bundle add csvlint --git https://github.com/GSS-Cogs/csvlint.rb --ref v0.6.7
+
+$gemDir = gem environment gemdir
+
+bundle config set bin bin
+bundle config set path "$gemDir"
+bundle install
+
+$csvLintInstallationFolder = (Get-Item bin | Resolve-Path).Path.Substring(38)
+
+Set-Content -Path "$csvLintInstallationFolder\csvlint.bat" -Value "@REM Forwarder script`n@echo off`necho Attempting to launch csvlint`nC:\hostedtoolcache\windows\Ruby\2.4.10\x64\bin\ruby $csvLintInstallationFolder\csvlint %*"
+
+$path += ";$csvLintInstallationFolder"
+
+cd $initialWorkingDir
 
 Write-Output "=== Installing csv2rdf ==="
 

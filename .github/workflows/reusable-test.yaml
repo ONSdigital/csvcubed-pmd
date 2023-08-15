@@ -17,7 +17,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install csv2rdf (Windows)
+      # Necessary for running csvlint inside the Windows VM.
+      - uses: ruby/setup-ruby@v1
+        if: inputs.os == 'windows-latest'
+        with:
+          ruby-version: '2.4'
+          
+      - name: Install csv2rdf & csvlint (Windows)
         id: windows-install
         if: inputs.os == 'windows-latest'
 
