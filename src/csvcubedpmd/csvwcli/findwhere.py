@@ -19,7 +19,7 @@ def find_where(find_location: Path, ask_query: str, negate: bool) -> None:
     matching_csvws: List[Path] = []
     for csvw_metadata_file in find_location.rglob("**/*csv-metadata.json"):
         graph_data = Graph()
-        graph_data.load(str(csvw_metadata_file), format="json-ld")
+        graph_data.parse(str(csvw_metadata_file), format="json-ld")
         if ask(ask_query, graph_data) != negate:
             matching_csvws.append(csvw_metadata_file)
 
