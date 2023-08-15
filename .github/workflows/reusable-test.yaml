@@ -17,6 +17,13 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install csv2rdf (Windows)
+        id: windows-install
+        if: inputs.os == 'windows-latest'
+
+        run: .\windows-testing-setup.ps1 -verbose
+        shell: pwsh
+
       - uses: actions/setup-python@v4
         id: install-python
         with:
