@@ -52,12 +52,12 @@ jobs:
       - name: Run behaviour tests (Windows)
         if: inputs.os == 'windows-latest'
         run: |
-          poetry run behave tests/behaviour --tags=-skip --junit --format progress
+          poetry run behave tests/features --tags=-skip --junit --format progress
         shell: pwsh
 
       - name: Run behaviour tests (Ubuntu)
         if: inputs.os == 'ubuntu-latest'
-        run: poetry run behave tests/behaviour --tags=-skip --junit --format progress
+        run: poetry run behave tests/features --tags=-skip --junit --format progress
 
       - name: Archive unit & behave test results from xml files
         if: always()
