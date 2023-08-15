@@ -59,7 +59,9 @@ jobs:
       - name: Run behaviour tests (Windows)
         if: inputs.os == 'windows-latest'
         run: |
-          poetry run behave tests/features --tags=-skip --junit --format progress
+          $csv2rdfLocation = "${{ steps.windows-install.outputs.CSV2RDF_LOCATION }}"
+
+          $env:NO_DOCKER="true"; $env:CSV2RDF="$csv2rdfLocation"; poetry run behave tests/behaviour --tags=-skip --junit --format progress
         shell: pwsh
 
       - name: Run behaviour tests (Ubuntu)
