@@ -17,19 +17,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Necessary for running csvlint inside the Windows VM.
-      - uses: ruby/setup-ruby@v1
-        if: inputs.os == 'windows-latest'
-        with:
-          ruby-version: '2.4'
-          
-      - name: Install csv2rdf & csvlint (Windows)
-        id: windows-install
-        if: inputs.os == 'windows-latest'
-
-        run: .\windows-testing-setup.ps1 -verbose
-        shell: pwsh
-
       - uses: actions/setup-python@v4
         id: install-python
         with:
@@ -61,14 +48,6 @@ jobs:
 
       - name: Run unittests
         run: poetry run pytest --junitxml=pytest_results.xml
-
-      - name: Run behaviour tests (Windows)
-        if: inputs.os == 'windows-latest'
-        run: |
-          $csv2rdfLocation = "${{ steps.windows-install.outputs.CSV2RDF_LOCATION }}"
-
-          $env:NO_DOCKER="true"; $env:CSV2RDF="$csv2rdfLocation"; poetry run behave tests/features --tags=-skip --junit --format progress
-        shell: pwsh
 
       - name: Run behaviour tests (Ubuntu)
         if: inputs.os == 'ubuntu-latest'

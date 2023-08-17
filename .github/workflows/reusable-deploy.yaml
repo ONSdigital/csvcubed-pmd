@@ -1,4 +1,4 @@
-name: Deploy csvcubed-pmd whl and documentation
+name: Deploy csvcubed-pmd whl
 on:
   workflow_call:
 
