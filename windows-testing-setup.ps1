@@ -49,3 +49,7 @@ echo "CSV2RDF_LOCATION=$csv2rdfLocation" | Out-File -FilePath $env:GITHUB_OUTPUT
 Write-Output "csv2rdf location: $csv2rdfLocation"
 
 $path += ";$pwd"
+
+Write-Output "Setting path"
+echo "PATH=$path" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+Write-Output $path
