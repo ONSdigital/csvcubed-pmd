@@ -7,7 +7,6 @@ import subprocess
 @when('the pmdutils command CLI is run with "{arguments}"')
 def step_impl(context, arguments: str) -> None:
     command: str = f"pmdutils {arguments.strip()}"
-    print(command)
     (status_code, response) = run_command_in_temp_dir(context, command)
     context.cli_result = (status_code, response)
 
