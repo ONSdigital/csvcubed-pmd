@@ -7,7 +7,7 @@ jobs:
   test_in_environments:
     strategy:
       matrix:
-        # Test in all supported versions of python in both Windows and Ubuntu.
+        # Test in all supported versions of python in Ubuntu.
         python-version: ['3.9', '3.10', '3.11']
         os: [ubuntu-latest]
     uses: ./.github/workflows/reusable-test.yaml
