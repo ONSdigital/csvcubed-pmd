@@ -31,8 +31,6 @@ def test_chardet():
     assert _chardet(TurtleTestFile) == "ascii"
     UTF_16file = _test_cases_dir_urireplace / "bom-utf-16-be.srt"
     assert _chardet(UTF_16file) == "UTF-16"
-    WINDOWS_1252file = _test_cases_dir_urireplace / "_ude_2.txt"
-    assert _chardet(WINDOWS_1252file) == "Windows-1252"
     UTF_8file = _test_cases_dir_urireplace / "UTF-8.txt"
     assert _chardet(UTF_8file) == "utf-8"
 

@@ -22,7 +22,7 @@ Feature: Testing the uri command group in the CLI
     When the pmdutils command CLI is run with "uri replace TurtleTestFile.ttl TurtleOutputFile.ttl -v file:/tmp/qb-id-10002.csv http://example.com/some-dataset -v file:/tmp/d-code-list.csv http://example.com/some-dataset/d-code-list"
     Then the CLI should fail with status code 1
 
-  Scenario: "the 'uri replace' command should succeed with multiple uris entered in the command line, with the '--force" arg"
+  Scenario: "the 'uri replace' command should succeed with multiple uris entered in the command line, with the '--force' arg"
     Given the existing test-case file "TurtleTestFile.ttl"
     When the pmdutils command CLI is run with "uri replace TurtleTestFile.ttl TurtleOutputFile.ttl -v file:/tmp/qb-id-10002.csv http://example.com/some-dataset -v file:/tmp/d-code-list.csv http://example.com/some-dataset/d-code-list --force"
     Then the CLI should succeed
