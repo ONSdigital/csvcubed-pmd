@@ -26,3 +26,6 @@ jobs:
     needs: [build_package_and_documentation]
     uses: ./.github/workflows/reusable-deploy.yaml
     secrets: inherit
+    permissions:
+      contents: read
+      id-token: write
