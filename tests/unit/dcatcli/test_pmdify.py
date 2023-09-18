@@ -12,7 +12,7 @@ from csvcubedpmd.models.CsvCubedOutputType import CsvCubedOutputType
 _TEST_CASES_DIR = get_test_cases_dir() / "dcatcli"
 
 
-def test_extracting_metadata():
+def test_extracting_metadata_dcat_dataset():
     """
     Test we can successfully extract the metadata from a `dcat:Dataset` inside a CSV-W.
     """
@@ -56,11 +56,64 @@ def test_extracting_metadata():
     assert existing_dcat_dataset.contact_point == "mailto:something@example.com"
     assert existing_dcat_dataset.identifier == "single-measure-bottles-bulletin"
 
+def test_extracting_metadata_dcat_distribution():
+    """
+    Test we can successfully extract the metadata from a `dcat:Distribution` inside a CSV-W.
+    """
+    csvw_graph = Graph()
+    csvw_graph.parse(
+        str(_TEST_CASES_DIR / "single-measure-bulletin-dist.csv-metadata.json"),
+        format="json-ld",
+    )
+
+    existing_dcat_distribution = pmdify._get_catalog_entry_from_dcat_dataset(csvw_graph)
+
+    assert existing_dcat_distribution is not None
+    assert existing_dcat_distribution.title == "single-measure-bottles-bulletin"
+    assert existing_dcat_distribution.label == "single-measure-bottles-bulletin"
+    assert existing_dcat_distribution.issued == datetime.datetime(2019, 2, 28)
+    assert existing_dcat_distribution.modified == datetime.datetime(2019, 2, 28)
+    assert existing_dcat_distribution.comment == "some comment goes here"
+    assert (
+        existing_dcat_distribution.markdown_description
+        == "All bulletins provide details on percentage of one litre or less bottles. This information is provided"
+        + " on a yearly basis."
+    )
+    assert (
+        existing_dcat_distribution.license
+        == "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+    )
+    assert (
+        existing_dcat_distribution.creator
+        == "https://www.gov.uk/government/organisations/hm-revenue-customs"
+    )
+    assert (
+        existing_dcat_distribution.publisher
+        == "https://www.gov.uk/government/organisations/hm-revenue-customs"
+    )
+    assert (
+        existing_dcat_distribution.landing_page
+        == {"https://www.gov.uk/government/statistics/bottles-bulletin"}
+    )
+    assert existing_dcat_distribution.themes == {"http://gss-data.org.uk/def/gdp#Trade"}
+    assert existing_dcat_distribution.keywords == {"keyword1", "keyword2"}
+    assert existing_dcat_distribution.contact_point == "mailto:something@example.com"
+    assert existing_dcat_distribution.identifier == "single-measure-bottles-bulletin"
+
+
+def test_pmdify_dcat():
+    csvw_metadata_file_path = _TEST_CASES_DIR / "single-measure-bulletin-dist.csv-metadata.json"
+    base_uri = "http://base-uri"  
+    data_graph_uri = "http://data-graph-uri"
+    catalog_metadata_graph_uri = "http://catalog-metadata-graph-uri"
+    pmdified = pmdify.pmdify_dcat(csvw_metadata_file_path, base_uri, data_graph_uri, catalog_metadata_graph_uri)
+    assert True
+
 
 def test_delete_dcat_metadata():
     csvw_graph = Graph()
     csvw_graph.parse(
-        str(_TEST_CASES_DIR / "single-measure-bulletin.csv-metadata.json"),
+        str(_TEST_CASES_DIR / "single-measure-bulletin-dist.csv-metadata.json"),
         format="json-ld",
     )
 
@@ -157,6 +210,7 @@ def test_catalog_uris_for_csvcubed_output_types():
         pmdify._get_catalog_uri_to_add_to(CsvCubedOutputType.QbDataSet)
         == "http://gss-data.org.uk/catalog/datasets"
     )
+
 
 
 if __name__ == "__main__":
