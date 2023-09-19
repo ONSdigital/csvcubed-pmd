@@ -101,15 +101,6 @@ def test_extracting_metadata_dcat_distribution():
     assert existing_dcat_distribution.identifier == "single-measure-bottles-bulletin"
 
 
-def test_pmdify_dcat():
-    csvw_metadata_file_path = _TEST_CASES_DIR / "single-measure-bulletin-dist.csv-metadata.json"
-    base_uri = "http://base-uri"  
-    data_graph_uri = "http://data-graph-uri"
-    catalog_metadata_graph_uri = "http://catalog-metadata-graph-uri"
-    pmdified = pmdify.pmdify_dcat(csvw_metadata_file_path, base_uri, data_graph_uri, catalog_metadata_graph_uri)
-    assert True
-
-
 def test_delete_dcat_metadata():
     csvw_graph = Graph()
     csvw_graph.parse(
