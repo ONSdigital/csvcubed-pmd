@@ -101,7 +101,24 @@ def test_extracting_metadata_dcat_distribution():
     assert existing_dcat_distribution.identifier == "single-measure-bottles-bulletin"
 
 
-def test_delete_dcat_metadata():
+def test_delete_metadata_dcat_dataset():
+    csvw_graph = Graph()
+    csvw_graph.parse(
+        str(_TEST_CASES_DIR / "single-measure-bulletin.csv-metadata.json"),
+        format="json-ld",
+    )
+
+    existing_dcat_dataset = pmdify._get_catalog_entry_from_dcat_dataset(csvw_graph)
+    assert existing_dcat_dataset is not None
+
+    pmdify._delete_existing_dcat_metadata(csvw_graph)
+
+    with pytest.raises(Exception) as exception:
+        thing = pmdify._get_catalog_entry_from_dcat_dataset(csvw_graph)
+    assert str(exception.value) == "Expected 1 dcat:Dataset or dcat:Distribution record, found 0"
+
+
+def test_delete_metadata_dcat_distribution():
     csvw_graph = Graph()
     csvw_graph.parse(
         str(_TEST_CASES_DIR / "single-measure-bulletin-dist.csv-metadata.json"),
@@ -115,7 +132,7 @@ def test_delete_dcat_metadata():
 
     with pytest.raises(Exception) as exception:
         thing = pmdify._get_catalog_entry_from_dcat_dataset(csvw_graph)
-    assert str(exception.value) == "Expected 1 dcat:Dataset record, found 0"
+    assert str(exception.value) == "Expected 1 dcat:Dataset or dcat:Distribution record, found 0"
 
 
 def test_delete_dcat_metadata_removes_legacy_code_list_items():
