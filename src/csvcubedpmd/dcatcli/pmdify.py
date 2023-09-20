@@ -87,7 +87,7 @@ def pmdify_dcat(
     )
 
 
-def _remove_csvw_rdf_from_graph(csvw_rdf_graph: Graph) -> None:
+def _remove_csvw_rdf_from_graph(csvw_rdf_graph):
     columns_list_items = list(csvw_rdf_graph.query("""
         PREFIX rdfs: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX csvw: <http://www.w3.org/ns/csvw#>
