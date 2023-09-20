@@ -424,7 +424,7 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> Union[pmdcat.Data
     ]
 
     if len(results) != 1:
-        raise Exception(f"Expected 1 dcat:Dataset or dcat:Distribution record, found {len(results)}")
+        raise ValueError(f"Expected 1 dcat:Dataset or dcat:Distribution record, found {len(results)}")
 
     record = results[0].asdict()
 
