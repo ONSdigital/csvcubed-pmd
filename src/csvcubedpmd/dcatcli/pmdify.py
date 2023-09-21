@@ -8,7 +8,7 @@ import json
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import Optional, Any, Callable, Tuple, List
+from typing import Optional, Any, Callable, Tuple, List, Union
 from urllib.parse import urlparse, urljoin
 
 import dateutil.parser
@@ -91,7 +91,7 @@ def _remove_csvw_rdf_from_graph(csvw_rdf_graph):
     columns_list_items = list(csvw_rdf_graph.query("""
         PREFIX rdfs: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX csvw: <http://www.w3.org/ns/csvw#>
-        
+
         SELECT ?listItem 
         WHERE {
             {
@@ -99,7 +99,7 @@ def _remove_csvw_rdf_from_graph(csvw_rdf_graph):
             } UNION {
                 [] csvw:columnReference/rdfs:rest*/rdfs:first* ?listItem.
             }
-        }    
+        }
     """))
 
     for list_item_identifier in [item[0] for item in columns_list_items]:
@@ -122,9 +122,9 @@ def _set_pmdcat_type_on_dataset_contents(
 ) -> None:
     if csvw_type == CsvCubedOutputType.QbDataSet:
         csvw_rdf_graph.update(
-            """           
-            PREFIX qb:      <http://purl.org/linked-data/cube#>
-            PREFIX pmdcat:  <http://publishmydata.com/pmdcat#>
+            """
+            PREFIX qb: <http://purl.org/linked-data/cube#>
+            PREFIX pmdcat: <http://publishmydata.com/pmdcat#>
 
             INSERT { ?dataset a pmdcat:DataCube. } WHERE { [] pmdcat:datasetContents ?dataset. }
             """
@@ -132,8 +132,8 @@ def _set_pmdcat_type_on_dataset_contents(
     elif csvw_type == CsvCubedOutputType.SkosConceptScheme:
         csvw_rdf_graph.update(
             """
-            PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
-            PREFIX pmdcat:  <http://publishmydata.com/pmdcat#>
+            PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+            PREFIX pmdcat: <http://publishmydata.com/pmdcat#>
 
             INSERT { ?conceptScheme a pmdcat:ConceptScheme. } WHERE { [] pmdcat:datasetContents ?conceptScheme. }
             """
@@ -174,7 +174,7 @@ def _replace_uri_substring_in_graph(
 
 
 def _generate_pmd_catalog_record(
-    catalog_entry: pmdcat.Dataset,
+    catalog_entry: Union[pmdcat.Dataset, pmdcat.Distribution],
     data_graph_uri: str,
     catalog_metadata_graph_uri: str,
     csv_cubed_output_type: CsvCubedOutputType,
@@ -256,16 +256,16 @@ def _delete_legacy_existing_dcat_catalog_record(csvw_graph: Graph) -> None:
         DELETE {
             ?catalogRecord a dcat:CatalogRecord;
                 ?p ?o.
-                
+
             <http://gss-data.org.uk/catalog/vocabularies> dcat:record ?catalogRecord.
         }
         WHERE {
             ?catalogRecord a dcat:CatalogRecord.
-            
+
             OPTIONAL { 
                 <http://gss-data.org.uk/catalog/vocabularies> dcat:record ?catalogRecord.
             }
-            
+
             OPTIONAL {
                 ?catalogRecord ?p ?o. 
             }
@@ -285,7 +285,7 @@ def _delete_existing_dcat_dataset_metadata(csvw_graph: Graph) -> None:
         PREFIX pmdcat: <http://publishmydata.com/pmdcat#>
 
         DELETE {
-            ?dataset a dcat:Dataset, pmdcat:Dataset;
+            ?dataset a dcat:Dataset, pmdcat:Dataset, dcat:Distribution, pmdcat:Distribution;
                 a dcat:Resource;
                 dcterms:issued ?issued;
                 dcterms:modified ?modified;
@@ -302,23 +302,27 @@ def _delete_existing_dcat_dataset_metadata(csvw_graph: Graph) -> None:
                 pmdcat:graph ?graph;
                 pmdcat:datasetContents ?datasetContents;
                 ?p ?o.
-                
+
             ?datasetContents a pmdcat:DatasetContents, pmdcat:DataCube, pmdcat:ConceptScheme.
-            
-            ?s ?p ?dataset.               
+
+            ?s ?p ?dataset.
         }
         WHERE {
             {
                 SELECT DISTINCT ?dataset
                 WHERE {
                     {
-                        ?dataset a dcat:Dataset.        
+                        ?dataset a dcat:Dataset.
                     } UNION {
                         ?dataset a pmdcat:Dataset.
+                    } UNION {
+                        ?dataset a dcat:Distribution.
+                    } UNION {
+                        ?dataset a pmdcat:Distribution.
                     }
                 }
             }
-            
+
             ?dataset dcterms:issued ?issued;
                 dcterms:modified ?modified.
 
@@ -331,26 +335,26 @@ def _delete_existing_dcat_dataset_metadata(csvw_graph: Graph) -> None:
             OPTIONAL { ?dataset dcat:theme ?theme }.
             OPTIONAL { ?dataset dcat:keyword ?keyword }.
             OPTIONAL { ?dataset dcat:contactPoint ?contactPoint }
-            OPTIONAL { ?dataset dcterms:identifier ?identifier }      
+            OPTIONAL { ?dataset dcterms:identifier ?identifier }
             OPTIONAL { ?dataset pmdcat:graph ?graph }
-            OPTIONAL { 
+            OPTIONAL {
                 ?dataset pmdcat:datasetContents ?datasetContents.
                 OPTIONAL {
                     ?datasetContents a pmdcat:DatasetContents, pmdcat:DataCube, pmdcat:ConceptScheme.
-                } 
-            }          
+                }
+            }
             OPTIONAL {
                 # Make sure to delete all related triples if the ?dataset is only an instance of 
                 # dcat:Dataset of pmdcat:Dataset (and nothing else).
-                
+
                 FILTER NOT EXISTS {
                     ?dataset a ?type.
-                    FILTER(?type NOT IN (dcat:Dataset, pmdcat:Dataset)).
+                    FILTER(?type NOT IN (dcat:Dataset, pmdcat:Dataset, dcat:Distribution, pmdcat:Distribution)).
                 }
-                
+
                 {
                     ?dataset ?p ?o.
-                } UNION {     
+                } UNION {
                     ?s ?p ?dataset.
                 }
             }
@@ -359,34 +363,40 @@ def _delete_existing_dcat_dataset_metadata(csvw_graph: Graph) -> None:
     )
 
 
-def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> pmdcat.Dataset:
+def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> Union[pmdcat.Dataset, pmdcat.Distribution]:
     """
     :return: a :class:`csvcubedpmd.models.rdf.pmdcat.Dataset` to avoid need to convert from dcat to pmdcat object.
     """
-
     catalog_metadata_query = """
         PREFIX dcat: <http://www.w3.org/ns/dcat#>
         PREFIX dcterms: <http://purl.org/dc/terms/>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX pmdcat:  <http://publishmydata.com/pmdcat#>
-    
+
         SELECT ?dataset ?title ?label ?issued ?modified ?comment ?description ?license ?creator ?publisher 
             (GROUP_CONCAT(?landingPage ; separator='|') as ?landingPages) 
             (GROUP_CONCAT(?theme; separator='|') as ?themes) 
             (GROUP_CONCAT(?keyword; separator='|') as ?keywords) 
+            (GROUP_CONCAT(?type; separator='|') as ?types)
             ?contactPoint ?identifier ?datasetContents
         WHERE {
             {
                 SELECT DISTINCT ?dataset
                 WHERE {
                     {
-                        ?dataset a dcat:Dataset.        
+                        ?dataset a dcat:Dataset.
                     } UNION {
                         ?dataset a pmdcat:Dataset.
+                    } UNION {
+                        ?dataset a dcat:Distribution.
+                    } UNION {
+                        ?dataset a pmdcat:Distribution.
                     }
                 }
             }
-        
+
+            ?dataset a ?type.
+
             ?dataset dcterms:title ?title;
                 rdfs:label ?label;
                 dcterms:issued ?issued;
@@ -402,7 +412,7 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> pmdcat.Dataset:
             OPTIONAL { ?dataset dcat:keyword ?keyword }.
             OPTIONAL { ?dataset dcat:contactPoint ?contactPoint }.
             OPTIONAL { ?dataset dcterms:identifier ?identifier }.   
-            OPTIONAL { ?dataset pmdcat:datasetContents ?datasetContents }.           
+            OPTIONAL { ?dataset pmdcat:datasetContents ?datasetContents }.
         }
         """
 
@@ -414,11 +424,18 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> pmdcat.Dataset:
     ]
 
     if len(results) != 1:
-        raise Exception(f"Expected 1 dcat:Dataset record, found {len(results)}")
+        raise ValueError(f"Expected 1 dcat:Dataset or dcat:Distribution record, found {len(results)}")
 
     record = results[0].asdict()
 
-    pmdcat_dataset = pmdcat.Dataset(str(record["dataset"]))
+    rdf_types = str(record["types"]).split("|")
+    if "http://www.w3.org/ns/dcat#Distribution" in rdf_types:
+        pmdcat_dataset = pmdcat.Distribution(str(record["dataset"]))
+    elif "http://www.w3.org/ns/dcat#Dataset" in rdf_types:
+        pmdcat_dataset = pmdcat.Dataset(str(record["dataset"]))
+    else:
+        raise ValueError("Not a dcat:Dataset or dcat:Distribution")
+
     pmdcat_dataset.title = str(record["title"])
     pmdcat_dataset.label = str(record["label"])
     pmdcat_dataset.issued = dateutil.parser.isoparse(str(record["issued"]))
@@ -447,7 +464,6 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> pmdcat.Dataset:
     pmdcat_dataset.dataset_contents = ExistingResource(dataset_contents_uri)
 
     return pmdcat_dataset
-
 
 def _none_or_map(val: Optional[Any], map_func: Callable[[Any], Any]) -> Optional[Any]:
     if val is None:

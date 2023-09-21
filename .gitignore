@@ -153,6 +153,7 @@ http_cache.sqlite
 # Ignore test files
 out/
 validation_errors.json
+behave_debug.py
 
 # mkdocs
 external-docs/site

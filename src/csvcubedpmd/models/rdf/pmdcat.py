@@ -56,16 +56,13 @@ class DataCube(DatasetContents):
 
 
 class Dataset(dcat.Dataset):
-    """HoldsCatalog Metadata."""
-
+    """Holds Catalog Metadata."""
     metadata_graph: Annotated[
         str, Triple(PMDCAT.metadataGraph, PropertyStatus.mandatory, URIRef)
     ]
     """Graph where the PMDCAT/DCAT metadata is stored."""
-
     pmdcat_graph: Annotated[str, Triple(PMDCAT.graph, PropertyStatus.mandatory, URIRef)]
     """Graph where the pmdcat:datasetContents is stored."""
-
     dataset_contents: Annotated[
         Resource[DatasetContents],
         Triple(PMDCAT.datasetContents, PropertyStatus.mandatory, map_resource_to_uri),
@@ -88,6 +85,35 @@ class Dataset(dcat.Dataset):
         dcat.Dataset.__init__(self, uri)
         self.rdf_types.add(PMDCAT.Dataset)
 
+
+class Distribution(dcat.Distribution):
+    """Holds Catalog Metadata."""
+    metadata_graph: Annotated[
+        str, Triple(PMDCAT.metadataGraph, PropertyStatus.mandatory, URIRef)
+    ]
+    """Graph where the PMDCAT/DCAT metadata is stored."""
+    pmdcat_graph: Annotated[str, Triple(PMDCAT.graph, PropertyStatus.mandatory, URIRef)]
+    """Graph where the pmdcat:datasetContents is stored."""
+    dataset_contents: Annotated[
+        Resource[DatasetContents],
+        Triple(PMDCAT.datasetContents, PropertyStatus.mandatory, map_resource_to_uri),
+    ]
+    markdown_description: Annotated[
+        Optional[str],
+        Triple(
+            PMDCAT.markdownDescription, PropertyStatus.recommended, map_to_literal_with_datatype(MARKDOWN)
+        ),
+    ]
+    sparql_endpoint: Annotated[
+        str, Triple(VOID.sparqlEndpoint, PropertyStatus.mandatory, URIRef)
+    ]
+    family: Annotated[str, Triple(GDP.family, PropertyStatus.recommended, GDP.term)]
+    update_due_on: Annotated[
+        datetime, Triple(GDP.updateDueOn, PropertyStatus.recommended, Literal)
+    ]
+    def __init__(self, uri: str):
+        dcat.Distribution.__init__(self, uri)
+        self.rdf_types.add(PMDCAT.Distribution)
 
 class CatalogRecord(dcat.CatalogRecord):
     """HoldsCatalog Metadata."""
