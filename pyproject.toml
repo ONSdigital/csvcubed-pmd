@@ -23,9 +23,8 @@ chardet = "^4.0.0"
 click = "^8.1.3"
 
 [tool.poetry.dev-dependencies]
-csvcubed-models = "0.1.9"
 csvcubed-devtools = "0.2.0"
-csvcubed=">=0.4.0"
+csvcubed=">=0.4.10"
 pytest-recording = "^0.12.0"
 
 [build-system]
