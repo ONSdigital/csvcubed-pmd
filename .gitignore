@@ -154,6 +154,10 @@ http_cache.sqlite
 out/
 validation_errors.json
 behave_debug.py
+pmdified/
+unpmdified/
+diffs/
+
 
 # mkdocs
 external-docs/site

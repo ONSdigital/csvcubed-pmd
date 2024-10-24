@@ -18,7 +18,7 @@ from csvcubedmodels.rdf.resource import (
 )
 from csvcubedmodels.rdf import dcat
 from csvcubedmodels.rdf import skos
-from csvcubedmodels.rdf.namespaces import DCAT, VOID, GDP
+from csvcubedmodels.rdf.namespaces import DCAT, VOID, GDP, DCTERMS
 
 PMDCAT = Namespace("http://publishmydata.com/pmdcat#")
 
@@ -80,6 +80,7 @@ class Dataset(dcat.Dataset):
     update_due_on: Annotated[
         datetime, Triple(GDP.updateDueOn, PropertyStatus.recommended, Literal)
     ]
+    source: Annotated[str, Triple(DCTERMS.source, PropertyStatus.recommended, URIRef)]
 
     def __init__(self, uri: str):
         dcat.Dataset.__init__(self, uri)
