@@ -238,11 +238,6 @@ def _write_catalog_metadata_to_quads(
     catalog_metadata_ds.serialize(
         str(catalog_metadata_quads_file_path), format="nquads"
     )
-    # TODO Remove
-    jsonld_path = str(catalog_metadata_quads_file_path).split("/")[-1].split(".")[0] + "-nquads.jsonld"
-    catalog_metadata_ds.serialize(
-        jsonld_path, format="json-ld"
-    )
 
 
 def _delete_existing_dcat_metadata(csvw_graph: Graph) -> None:
@@ -373,8 +368,9 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph, csvw_type: CsvCubedO
         PREFIX dcterms: <http://purl.org/dc/terms/>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX pmdcat:  <http://publishmydata.com/pmdcat#>
-    
-        SELECT ?dataset ?title ?label ?issued ?modified ?comment ?description ?license ?creator ?publisher ?contactPoint ?identifier ?datasetContents ?distribution
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+
+        SELECT ?dataset ?title ?label ?issued ?modified ?comment ?description ?license ?creator ?publisher ?contactPoint ?identifier ?datasetContents ?distribution ?csvcubedVersion
             (GROUP_CONCAT(?landingPage ; separator='|') as ?landingPages) 
             (GROUP_CONCAT(?theme; separator='|') as ?themes) 
             (GROUP_CONCAT(?keyword; separator='|') as ?keywords)
@@ -395,6 +391,7 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph, csvw_type: CsvCubedO
                 dcterms:issued ?issued;
                 dcterms:modified ?modified.
 
+            OPTIONAL { ?buildActivity prov:used ?csvcubedVersion }.
             OPTIONAL { ?dataset rdfs:comment ?comment }.
             OPTIONAL { ?dataset dcterms:description ?description }.
             OPTIONAL { ?dataset dcterms:license ?license }.
@@ -422,40 +419,46 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph, csvw_type: CsvCubedO
 
     record = results[0].asdict()
 
-    pmdcat_dataset = pmdcat.Dataset(str(record["dataset"]))
-    pmdcat_dataset.title = str(record["title"])
-    pmdcat_dataset.label = str(record["label"])
-    pmdcat_dataset.issued = dateutil.parser.isoparse(str(record["issued"]))
-    pmdcat_dataset.modified = dateutil.parser.isoparse(str(record["modified"]))
-    pmdcat_dataset.comment = _none_or_map(record.get("comment"), str)
-    pmdcat_dataset.markdown_description = _none_or_map(record.get("description"), str)
-    pmdcat_dataset.license = _none_or_map(record.get("license"), str)
-    pmdcat_dataset.creator = _none_or_map(record.get("creator"), str)
-    pmdcat_dataset.publisher = _none_or_map(record.get("publisher"), str)
-    pmdcat_dataset.landing_page = (
+    catalog_entry = pmdcat.Dataset(str(record["dataset"]))
+    catalog_entry.title = str(record["title"])
+    catalog_entry.label = str(record["label"])
+    catalog_entry.identifier = str(record.get("identifier"))
+    catalog_entry.source = str(record["dataset"])
+    catalog_entry.issued = dateutil.parser.isoparse(str(record["issued"]))
+    catalog_entry.modified = dateutil.parser.isoparse(str(record["modified"]))
+    catalog_entry.comment = _none_or_map(record.get("comment"), str)
+    catalog_entry.markdown_description = _none_or_map(record.get("description"), str)
+    catalog_entry.license = _none_or_map(record.get("license"), str)
+    catalog_entry.creator = _none_or_map(record.get("creator"), str)
+    catalog_entry.publisher = _none_or_map(record.get("publisher"), str)
+    catalog_entry.contact_point = _none_or_map(record.get("contactPoint"), str)
+    catalog_entry.landing_page = (
         set()
         if len(str(record["landingPages"])) == 0
         else set(str(record["landingPages"]).split("|"))
     )
-    pmdcat_dataset.themes = (
+    catalog_entry.themes = (
         set() if len(str(record["themes"])) == 0 else set(str(record["themes"]).split("|"))
     )
-    pmdcat_dataset.keywords = (
+    catalog_entry.keywords = (
         set()
         if len(str(record["keywords"])) == 0
         else set(str(record["keywords"]).split("|"))
     )
-    pmdcat_dataset.contact_point = _none_or_map(record.get("contactPoint"), str)
-    pmdcat_dataset.identifier = str(record.get("identifier"))
+    csvcubed_version = _none_or_map(record.get("csvcubedVersion"), str)
+    csvcubed_version = str(record["csvcubedVersion"]).split("/")[-1].split(".")
     if csvw_type == CsvCubedOutputType.QbDataSet:
-        dataset_contents_uri = str(record.get("datasetContents", record["distribution"]))
+        if csvcubed_version is not None and int(csvcubed_version[1]) < 5:
+            dataset_contents_uri = str(record.get("datasetContents", record["dataset"]))
+        else:
+            dataset_contents_uri = str(record.get("datasetContents", record["distribution"]))
     elif csvw_type == CsvCubedOutputType.SkosConceptScheme:
         dataset_contents_uri = str(record.get("datasetContents", record["dataset"]))
     else:
         raise Exception(f"Unmatched CSV-W type '{csvw_type}'")
-    pmdcat_dataset.dataset_contents = ExistingResource(dataset_contents_uri)
-
-    return pmdcat_dataset
+    catalog_entry.dataset_contents = pmdcat.DatasetContents(dataset_contents_uri)
+    catalog_entry.dataset_contents.label = str(record["label"])
+    return catalog_entry
 
 
 def _none_or_map(val: Optional[Any], map_func: Callable[[Any], Any]) -> Optional[Any]:

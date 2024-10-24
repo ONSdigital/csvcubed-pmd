@@ -138,7 +138,10 @@
                     "@id": "http://gss-data.org.uk/def/gdp#Trade"
                 }
             ],
-            "http://www.w3.org/ns/dcat#keyword": [ "keyword1", "keyword2"],
+            "http://www.w3.org/ns/dcat#keyword": [
+                "keyword1",
+                "keyword2"
+            ],
             "http://www.w3.org/ns/dcat#contactPoint": {
                 "@id": "mailto:something@example.com"
             }
